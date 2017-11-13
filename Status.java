@@ -1,0 +1,4 @@
+public enum Status
+{
+	AWAKE, SLEEP, NERVOUS, ATTENTIVE, NONATTENTIVE
+}
