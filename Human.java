@@ -21,20 +21,25 @@ public class Human extends Animal
 	{
 		return name;
 	}
+	public void setName(String name) {this.name = name;}
 
+	public Status getStatus()
+	{
+		return status;
+	}
 	public void setStatus(Status status)
 	{	
 		this.status = status;
 	}
 
-	public Room getRoom()
+	public Room getPlace()
 	{
 		return place;
 	}
-
-	public Status getStatus()
-	{	
-		return status;
+	public void setPlace(Room place)
+	{
+		this.place = place;
 	}
+
 }
 
