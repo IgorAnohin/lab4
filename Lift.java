@@ -46,7 +46,7 @@ public class Lift extends Room
 			System.out.println("(Лифт поедет вниз)");
 			status_move = DOWN;
 		}
-		if (Passager.getRocketKnowledge() == RocketKnowledge.BAD)
+		if (Passager.getKnowledge() == RocketKnowledge.BAD)
 			System.out.printf("%s не замечает куда поедет лифт...\n",Passager.getName());
 		else
 			System.out.printf("%s знает куда поедет лифт...\n",Passager.getName());
