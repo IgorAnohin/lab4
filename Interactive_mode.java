@@ -36,6 +36,8 @@ public class Interactive_mode {
 			"'import {path}' for add new collection path\n" +
 			"'start' for start simulation\n" +
 			"'exit' for exit from program\n" +
+			"'show' for show list with passageres\n" +
+			"'save_to {path}' save list to new file\n" +
 			"'debug' for add bedugging messages";
 
 	/**
@@ -82,6 +84,9 @@ public class Interactive_mode {
 			case "import":
 				import_path(input);
 				break;
+			case "save_to":
+			    save_to(input);
+			    break;
 			case "start":
 				new Situation(collection_passagers_path, collection_rooms_path);
 				break;
@@ -165,6 +170,12 @@ public class Interactive_mode {
 	{
 		String new_path = input.nextLine();
 		collection_passagers_path = new_path;
+	}
+
+	static void save_to(Scanner input)
+	{
+		Rocket rocket = read_from_xml(Rocket.class, collection_passagers_path);
+		write_to_xml(rocket, input.nextLine());
 	}
 
 	/**
@@ -306,7 +317,6 @@ public class Interactive_mode {
  * Алгоритм,  список комнат, в которых был
  * Подтверждение коммнад
  * Исключение на нелепый ввод
- * Список коллекции show
  * Считывание из одного, записаь в другой файл.
  */
 
