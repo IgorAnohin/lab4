@@ -80,7 +80,8 @@ class Situation
         System.out.printf("Текущее местоположение: %s\n\n", Rocket_passageres.get(passager).getPlace().getPlaceName());
 
         while (true) {
-            if (Rocket_passageres.get(passager).getPlace().getNextRoom() == null)
+            if (Rocket_passageres.get(passager).getPlace().getNextRoom() == null ||
+					Rocket_passageres.get(passager).already_be_here())
                 throw new nadoelo_walk(Rocket_passageres.get(passager).getPlace());
 
             //if Knowledge Bad have chance stay this some time
@@ -128,7 +129,7 @@ class Situation
 		create_heroes();
 		create_devices();
 		System.out.printf("Иницилизация закончена.\n\n");
-		Interactive_mode.writer_passageres(Rocket_passageres);
+		//Interactive_mode.writer_passageres(Rocket_passageres);
 		return new Rocket(Rocket_passageres, Rooms, Devices);
 	}
 
@@ -193,7 +194,10 @@ class Situation
 		for (int room_number = 0; room_number < room_count; room_number++)
 		{
 			Room [] Next_rooms = generate_next_rooms();
-			Rooms.add(init_room(room_number, Next_rooms[0], Next_rooms[1]));
+			Room new_room = init_room(room_number, Next_rooms[0], Next_rooms[1]);
+			Rooms.add(new_room);
+			if (Next_rooms[0] != null) Next_rooms[0].set_new_next_room(new_room);
+			if (Next_rooms[1] != null) Next_rooms[1].set_new_next_room(new_room);
 		}
 		System.out.println();
 	}
