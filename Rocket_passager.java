@@ -4,17 +4,20 @@ import com.sun.tracing.dtrace.FunctionName;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.HashSet;
 
 @XmlRootElement(name = "passager")
 public class Rocket_passager extends Human implements Movable
 {
+	private HashSet<Room> be_here;
 	private RocketKnowledge knowledge;
 
 	public Rocket_passager(String name, RocketKnowledge knowledge, Status status, Room place)
 	{
-	super(name, status);
-	this.knowledge = knowledge;
-	this.place = place;
+		super(name, status);
+		be_here = new HashSet<>();
+		this.knowledge = knowledge;
+		this.place = place;
 	}
 
 	public Rocket_passager()
@@ -32,8 +35,9 @@ public class Rocket_passager extends Human implements Movable
 	@Override
 	public void move()
 	{
+		be_here.add(place);
 		place = place.getNextRoom();
-		System.out.printf("%s перемещается\nТекущее местоположение: %s\n", name, place.getPlaceName());		
+		System.out.printf("%s перемещается\nТекущее местоположение: %s\n", name, place.getPlaceName());
 	}
 
 	@Override
@@ -58,5 +62,8 @@ public class Rocket_passager extends Human implements Movable
 			return false;
 		return true;
 	}
-		
+	public boolean already_be_here()
+	{
+		return be_here.contains(place);
+	}
 }
