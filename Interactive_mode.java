@@ -68,12 +68,21 @@ public class Interactive_mode {
 				break;
 			case "exit":
 				exit = true;
+				System.out.println("Program will be close");
 				break;
 			case "remove_last":
-				remove_last();
+			    try {
+					remove_last();
+				} catch (NullPointerException e) {
+					System.out.println("Can't open file, may be you should change path");
+				}
 				break;
 			case "remove_first":
-				remove_first();
+				try {
+					remove_first();
+				} catch (NullPointerException e) {
+					System.out.println("Can't open file, may be you should change path");
+				}
 				break;
 			case "add":
 			    try {
@@ -97,7 +106,11 @@ public class Interactive_mode {
 				import_path(input);
 				break;
 			case "save_to":
-			    save_to(input);
+				try {
+			    	save_to(input);
+				} catch (NullPointerException e) {
+					System.out.println("Can't open file, may be you should change path");
+				}
 			    break;
 			case "start":
 				new Situation(collection_passagers_path, collection_rooms_path);
