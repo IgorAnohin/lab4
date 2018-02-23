@@ -76,10 +76,22 @@ public class Interactive_mode {
 				remove_first();
 				break;
 			case "add":
-				add_element(get_json_element(input));
+			    try {
+					add_element(get_json_element(input));
+				} catch (IllegalStateException e) {
+					System.out.println("Incorrect input");
+				} catch (NullPointerException e) {
+					System.out.println("Can't open file, may be you should change path");
+				}
 				break;
 			case "remove":
-				remove_element(get_json_element(input));
+				try {
+					remove_element(get_json_element(input));
+				} catch (IllegalStateException e) {
+						System.out.println("Incorrect input");
+				} catch (NullPointerException e) {
+						System.out.println("Can't open file, may be you should change path");
+				}
 				break;
 			case "import":
 				import_path(input);
@@ -316,7 +328,5 @@ public class Interactive_mode {
 /**
  * Алгоритм,  список комнат, в которых был
  * Подтверждение коммнад
- * Исключение на нелепый ввод
- * Считывание из одного, записаь в другой файл.
  */
 
