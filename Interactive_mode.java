@@ -73,6 +73,7 @@ public class Interactive_mode {
 			case "remove_last":
 			    try {
 					remove_last();
+					System.out.println("Last element was removed");
 				} catch (NullPointerException e) {
 					System.out.println("Can't open file, may be you should change path");
 				}
@@ -80,6 +81,7 @@ public class Interactive_mode {
 			case "remove_first":
 				try {
 					remove_first();
+					System.out.println("First element was removed");
 				} catch (NullPointerException e) {
 					System.out.println("Can't open file, may be you should change path");
 				}
@@ -87,6 +89,7 @@ public class Interactive_mode {
 			case "add":
 			    try {
 					add_element(get_json_element(input));
+					System.out.println("Element was successfully added");
 				} catch (IllegalStateException e) {
 					System.out.println("Incorrect input");
 				} catch (NullPointerException e) {
@@ -96,6 +99,7 @@ public class Interactive_mode {
 			case "remove":
 				try {
 					remove_element(get_json_element(input));
+					System.out.println("Element was successfully removed");
 				} catch (IllegalStateException e) {
 						System.out.println("Incorrect input");
 				} catch (NullPointerException e) {
@@ -104,10 +108,12 @@ public class Interactive_mode {
 				break;
 			case "import":
 				import_path(input);
+				System.out.println("Path was changed");
 				break;
 			case "save_to":
 				try {
 			    	save_to(input);
+					System.out.println("Collection was successfully saved");
 				} catch (NullPointerException e) {
 					System.out.println("Can't open file, may be you should change path");
 				}
@@ -120,7 +126,12 @@ public class Interactive_mode {
 				new Situation();
 				break;
 			case "show":
-				show_list(new Rocket(), collection_passagers_path);
+			    try {
+					System.out.println("Try to show collection");
+					show_list(new Rocket(), collection_passagers_path);
+				} catch (NullPointerException e) {
+					System.out.println("Can't open file, may be you should change path");
+				}
 			default:
 				System.out.println(help);
 				break;
@@ -340,6 +351,5 @@ public class Interactive_mode {
 
 /**
  * Алгоритм,  список комнат, в которых был
- * Подтверждение коммнад
  */
 
