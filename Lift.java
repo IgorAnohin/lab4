@@ -18,7 +18,7 @@ public class Lift extends Room
 		super(name, next_room, next_room2, chance_go_out, items);
 	}
 
-
+/*
 	@Override
 	public Room getNextRoom()
 	{
@@ -32,7 +32,7 @@ public class Lift extends Room
 			return next_room2;
 		}
 	}
-
+*/
 	@Override
 	public void room_activity(Rocket_passager Passager)
 	{
