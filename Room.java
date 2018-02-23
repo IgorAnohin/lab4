@@ -1,6 +1,9 @@
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Map;
 import java.util.HashMap;
 
+@XmlRootElement
 public class Room
 {
 	protected double chance_go_out;
@@ -52,10 +55,18 @@ public class Room
 			return (Math.random() > 0.5) ? next_room2 : next_room;
 	}
 
+	@XmlElement
 	public String getPlaceName()
 	{
 		return name;
 	}
+	public void setPlaceName(String name)
+	{
+		this.name = name;
+	}
+
+	public Room()
+	{}
 
 	public Room(String name, Room next_room, Room next_room2, double chance_go_out, String  ... items)
 	{
@@ -110,10 +121,14 @@ public class Room
 			if (this.items.containsKey(item) )
 				this.items.put(item, true);
 	}
-
+	@XmlElement
 	public double getChance_go_out()
 	{
 		return chance_go_out;
+	}
+	public void setChance_go_out(double chance)
+	{
+		this.chance_go_out = chance;
 	}
 
 	public boolean go_out()
@@ -157,7 +172,17 @@ public class Room
 	@Override
 	public String toString()
 	{
-		return "Это команата!!!";
+		return "Это команата!!! " + this.name;
 	}
+
+	public boolean comparebyname(String name) {return (this.name == name);}
+	public String getName() {return this.name;}
+
+	@XmlElement
+	public Room getNext_room1() {return next_room;}
+	public void setNext_room1(Room next_room) {this.next_room = next_room;}
+	@XmlElement
+	public Room getNext_room2() {return next_room2;}
+	public void setNext_room2(Room next_room) {this.next_room2 = next_room;}
 
 }
