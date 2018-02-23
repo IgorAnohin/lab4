@@ -1,7 +1,6 @@
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 @XmlRootElement
 public class Room
@@ -10,8 +9,10 @@ public class Room
 	protected String name;
 	protected Room next_room;
 	protected Room next_room2;
+	protected HashSet<Room> more_next_rooms;
 	protected Bottom bottom;
 	protected Map<String, Boolean> items = new HashMap<> ();
+	static Random random = new Random();
 {
 	next_room2 = null;
 	items.put("stairs", false);
@@ -40,19 +41,15 @@ public class Room
 		return items.get(item);
 	}
 
-	public Room getwayout()
-	{
-		if (next_room == null && next_room2 == null)
-			return null;
-		else return (next_room == null) ? next_room2 : next_room;
-	}
-
 	public Room getNextRoom()
 	{
-		if (next_room2 == null)
-			return next_room;
-		else
-			return (Math.random() > 0.5) ? next_room2 : next_room;
+	    int pick = random.nextInt(more_next_rooms.size());
+	    for (Room try_to_find : more_next_rooms) {
+	    	pick--;
+	    	if (pick <= 0)
+				return try_to_find;
+		}
+		return null;
 	}
 
 	@XmlElement
@@ -70,14 +67,19 @@ public class Room
 
 	public Room(String name, Room next_room, Room next_room2, double chance_go_out, String  ... items)
 	{
+	    more_next_rooms = new HashSet<>();
 		this.name = name;
 		System.out.printf("Создаю помещение: %s\n" , name);
 		this.next_room = next_room;
 		this.next_room2 = next_room2;
-		if (next_room != null)
+		if (next_room != null) {
 			System.out.println("комната соединена с " + next_room.getPlaceName());
-		if (next_room2 != null && !next_room.equals(next_room2))
+			more_next_rooms.add(next_room);
+		}
+		if (next_room2 != null && !next_room.equals(next_room2)) {
 			System.out.println("Из этой комнаты можно попасть " + next_room2.getPlaceName());
+			more_next_rooms.add(next_room2);
+		}
 		if (next_room == null && next_room2 == null)
 			System.out.println("Попасть из этой комнаты никуда нельзя");
 		System.out.println();
@@ -110,6 +112,7 @@ public class Room
 		for (String item : items)
 			if (this.items.containsKey(item) )
 				this.items.put(item, true);
+		more_next_rooms.add(next_room);
 	}
 
 	public Room(String name, String ... items)
@@ -167,6 +170,11 @@ public class Room
 		if (!items.equals(other.items) )
 			return false;
 		return true;
+	}
+
+	public void set_new_next_room(Room room)
+	{
+		more_next_rooms.add(room);
 	}
 
 	@Override
