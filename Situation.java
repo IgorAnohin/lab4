@@ -143,15 +143,18 @@ class Situation
 		Room_list rooms = Interactive_mode.read_from_xml(Room_list.class, path_to_romms);
 		Rooms = rooms.getRooms();
 		room_count = Rooms.size();
-		for(Room room : Rooms)
-			for(Room nextroom : Rooms) {
-				if ((room.getNext_room1() != null)&&(room.getNext_room1().getName().equals(nextroom.getName()))) {
-						room.setNext_room1(nextroom);
-					}
+		for(Room room : Rooms) {
+			for (Room nextroom : Rooms) {
+				if ((room.getNext_room1() != null) && (room.getNext_room1().getName().equals(nextroom.getName()))) {
+					room.setNext_room1(nextroom);
+				}
 				if ((room.getNext_room2() != null) && (room.getNext_room2().getName().equals(nextroom.getName()))) {
 					room.setNext_room2(nextroom);
 				}
 			}
+			if (room.getNext_room1() != null) room.getNext_room1().set_new_next_room(room);
+			if (room.getNext_room2() != null) room.getNext_room2().set_new_next_room(room);
+		}
 
 		Rocket rocket = Interactive_mode.read_from_xml(Rocket.class, path_to_passageres);
 
