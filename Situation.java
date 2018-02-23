@@ -122,15 +122,7 @@ class Situation
 		System.out.println();
 		System.out.println("Генерируем карту:");
 
-		try
-		{
-			get_indofmation_about_rocket_in_town(new Space_town());
-		} catch (SilentHill e)
-		{
-			System.out.println(e);
-			System.out.println("Никто тут не живёт, город пуст");
-			System.out.println();
-		}
+		show_little_town();
 
 		create_rooms();
 		create_heroes();
@@ -145,15 +137,7 @@ class Situation
 		System.out.println();
 		System.out.println("Генерируем карту:");
 
-		try
-		{
-			get_indofmation_about_rocket_in_town(new Space_town());
-		} catch (SilentHill e)
-		{
-			System.out.println(e);
-			System.out.println("Никто тут не живёт, город пуст");
-			System.out.println();
-		}
+		show_little_town();
 
 		Room_list rooms = Interactive_mode.read_from_xml(Room_list.class, path_to_romms);
 		Rooms = rooms.getRooms();
@@ -181,6 +165,16 @@ class Situation
 		create_devices();
 		System.out.printf("Иницилизация закончена.\n\n");
 		return new Rocket(Rocket_passageres, Rooms, Devices);
+	}
+
+	private void show_little_town() {
+		try {
+			get_indofmation_about_rocket_in_town(new Space_town());
+		} catch (SilentHill e) {
+			System.out.println(e);
+			System.out.println("Никто тут не живёт, город пуст");
+			System.out.println();
+		}
 	}
 
 	static void get_indofmation_about_rocket_in_town( Space_town town) throws SilentHill
