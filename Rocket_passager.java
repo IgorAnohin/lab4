@@ -1,6 +1,15 @@
+import com.sun.org.apache.xpath.internal.operations.Equals;
+import com.sun.tracing.dtrace.FunctionName;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlRootElement(name = "passager")
 public class Rocket_passager extends Human implements Movable
 {
 	private RocketKnowledge knowledge;
+
 	public Rocket_passager(String name, RocketKnowledge knowledge, Status status, Room place)
 	{
 	super(name, status);
@@ -8,14 +17,16 @@ public class Rocket_passager extends Human implements Movable
 	this.place = place;
 	}
 
-	public RocketKnowledge getRocketKnowledge()
+	public Rocket_passager()
+	{}
+
+	public RocketKnowledge getKnowledge()
 	{
 	return knowledge; 
-	} 
-
-	public Room getPlace()
+	}
+	public void setKnowledge(RocketKnowledge knowledge)
 	{
-	return place;
+		this.knowledge = knowledge;
 	}
 
 	@Override
@@ -30,6 +41,22 @@ public class Rocket_passager extends Human implements Movable
 	{
 		if (place.check_item("stairs"))
 			System.out.printf("%s поднимается по леcтнице\n", name);		
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass() )
+			return false;
+		Rocket_passager other = (Rocket_passager) obj;
+		if (!(this.name==other.getName() && this.knowledge == other.getKnowledge() &&
+				this.status == other.getStatus() && this.place == other.getPlace()) )
+			return false;
+		return true;
 	}
 		
 }
