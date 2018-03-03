@@ -186,7 +186,7 @@ public class Room
 	@Override
 	public String toString()
 	{
-		return "Это команата!!! " + this.name;
+		return this.name;
 	}
 
 	public boolean comparebyname(String name) {return this.name.equals(name);}
