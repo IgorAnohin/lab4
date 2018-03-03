@@ -8,6 +8,7 @@ import javax.xml.stream.XMLStreamWriter;
 import java.io.*;
 
 import java.util.Scanner;
+import java.nio.file.*;
 
 import com.google.gson.*;
 import java.util.LinkedList;
@@ -21,10 +22,8 @@ public class Interactive_mode {
 	private static boolean DEBUG = false;
 	private static int LAST_INDEX = -1;
 
-	private static String collection_passagers_path = "C:\\Users\\810298\\Desktop\\Documents\\pasageres.xml";
-	//private static String collection_passagers_path = "passageres.xml";
-	private static String collection_rooms_path = "C:\\Users\\810298\\Desktop\\Documents\\rooms.xml";
-	//private static String collection_rooms_path = "rooms.xml";
+	static String collection_passagers_path = "passageres.xml";
+	static String collection_rooms_path = "rooms.xml";
 
 
 	private static boolean exit = false;
@@ -46,6 +45,7 @@ public class Interactive_mode {
 	 */
 	public static void main(String [] args)
 	{
+        
 		Scanner input = new Scanner(System.in);
 		while (!exit)
 		{
@@ -132,6 +132,7 @@ public class Interactive_mode {
 				} catch (NullPointerException e) {
 					System.out.println("Can't open file, may be you should change path");
 				}
+				break;
 			default:
 				System.out.println(help);
 				break;
@@ -225,12 +226,30 @@ public class Interactive_mode {
 		Gson gson = new Gson();
 		String JSON = input.nextLine();
 		System.out.println(JSON);
-		Rocket_passager passager = gson.fromJson(JSON, Rocket_passager.class);
+		Rocket_passager passager;
+		try {
+		    passager = gson.fromJson(JSON, Rocket_passager.class);
+		    if (passager.getPlace() == null)
+		    	throw new Exception();
+		} catch (Exception e)
+		{
+			System.out.println("Не самое правильное значение");
+			System.out.println("Сначала имя, потом знания, затем статус и местоположение");
+			throw  new IllegalStateException();
+		}
 
 		Room_list Container = read_from_xml(Room_list.class, collection_rooms_path);
-		for(Room room : Container.getRooms())
-			if (room.comparebyname(passager.getPlace().getName()))
+		boolean room_exist = false;
+		for(Room room : Container.getRooms()) {
+			if (room.comparebyname(passager.getPlace().getName())) {
 				passager.setPlace(room);
+				room_exist = true;
+			}
+		}
+		if (!room_exist) {
+			System.out.println("Такой комнаты не существует");
+			throw new IllegalStateException();
+		}
 
 		return passager;
 	}
@@ -334,22 +353,9 @@ public class Interactive_mode {
 
 	static <T> void show_list( T object_to_write, String path)
 	{
-		try {
-			File file = new File(path);
-			JAXBContext jaxbContext = JAXBContext.newInstance(object_to_write.getClass());
-			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-
-			// output pretty printed
-			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			jaxbMarshaller.marshal(object_to_write, System.out);
-
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
+	    	Rocket rocket = read_from_xml(Rocket.class, collection_passagers_path);
+	    	for (Rocket_passager auto : rocket.getRocket_passageres()) {
+				System.out.println(auto.getName() + " " + auto.getKnowledge() + " " + auto.getStatus() + " " + auto.getPlace());
+	    	}
 	}
 }
-
-/**
- * Алгоритм,  список комнат, в которых был
- */
-
