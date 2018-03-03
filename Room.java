@@ -43,7 +43,11 @@ public class Room
 
 	public Room getNextRoom()
 	{
-	    int pick = random.nextInt(more_next_rooms.size());
+		if (more_next_rooms == null)
+			more_next_rooms = new HashSet<>();
+		if (more_next_rooms.isEmpty())
+			return null;
+		int pick = random.nextInt(more_next_rooms.size());
 	    for (Room try_to_find : more_next_rooms) {
 	    	pick--;
 	    	if (pick <= 0)
@@ -174,6 +178,8 @@ public class Room
 
 	public void set_new_next_room(Room room)
 	{
+		if (more_next_rooms == null)
+			more_next_rooms = new HashSet<>();
 		more_next_rooms.add(room);
 	}
 
@@ -183,7 +189,7 @@ public class Room
 		return "Это команата!!! " + this.name;
 	}
 
-	public boolean comparebyname(String name) {return (this.name == name);}
+	public boolean comparebyname(String name) {return this.name.equals(name);}
 	public String getName() {return this.name;}
 
 	@XmlElement
