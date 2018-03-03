@@ -354,8 +354,10 @@ public class Interactive_mode {
 	static <T> void show_list( T object_to_write, String path)
 	{
 	    	Rocket rocket = read_from_xml(Rocket.class, collection_passagers_path);
+			System.out.println("Passagers:");
 	    	for (Rocket_passager auto : rocket.getRocket_passageres()) {
-				System.out.println(auto.getName() + " " + auto.getKnowledge() + " " + auto.getStatus() + " " + auto.getPlace());
+				System.out.println("Name: "+ auto.getName() + ", knowledge: " + auto.getKnowledge() +
+						", status: " + auto.getStatus() + ", place: " + auto.getPlace());
 	    	}
 	}
 }
