@@ -129,7 +129,10 @@ class Situation
 		create_heroes();
 		create_devices();
 		System.out.printf("Иницилизация закончена.\n\n");
-		//Interactive_mode.writer_passageres(Rocket_passageres);
+		Interactive_mode.writer_passageres(Rocket_passageres);
+		Room_list rooms = new Room_list();
+		rooms.setRooms(Rooms);
+		Interactive_mode.write_to_xml(rooms, Interactive_mode.collection_rooms_path);
 		return new Rocket(Rocket_passageres, Rooms, Devices);
 	}
 
@@ -152,6 +155,8 @@ class Situation
 					room.setNext_room2(nextroom);
 				}
 			}
+			System.out.println(room +" " + room.getNext_room1());
+
 			if (room.getNext_room1() != null) room.getNext_room1().set_new_next_room(room);
 			if (room.getNext_room2() != null) room.getNext_room2().set_new_next_room(room);
 		}
