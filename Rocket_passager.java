@@ -64,6 +64,8 @@ public class Rocket_passager extends Human implements Movable
 	}
 	public boolean already_be_here()
 	{
+	    if (be_here == null)
+			be_here = new HashSet<>();
 		return be_here.contains(place);
 	}
 }
