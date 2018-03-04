@@ -81,9 +81,9 @@ class Situation
 
         while (true) {
             if (Rocket_passageres.get(passager).getPlace().getNextRoom() == null ||
-					Rocket_passageres.get(passager).already_be_here())
-                throw new nadoelo_walk(Rocket_passageres.get(passager).getPlace());
-
+					Rocket_passageres.get(passager).already_be_here()) {
+				throw new nadoelo_walk(Rocket_passageres.get(passager).getPlace());
+			}
             //if Knowledge Bad have chance stay this some time
             if (Rocket_passageres.get(passager).getKnowledge() == RocketKnowledge.BAD) {
                 //While can't go from this room
@@ -150,9 +150,11 @@ class Situation
 			for (Room nextroom : Rooms) {
 				if ((room.getNext_room1() != null) && (room.getNext_room1().getName().equals(nextroom.getName()))) {
 					room.setNext_room1(nextroom);
+					room.set_new_next_room(nextroom);
 				}
 				if ((room.getNext_room2() != null) && (room.getNext_room2().getName().equals(nextroom.getName()))) {
 					room.setNext_room2(nextroom);
+					room.set_new_next_room(nextroom);
 				}
 			}
 			System.out.println(room +" " + room.getNext_room1());
@@ -166,8 +168,9 @@ class Situation
 		Rocket_passageres = rocket.getRocket_passageres();
 		for(Rocket_passager passager : Rocket_passageres)
 			for(Room room : Rooms)
-				if (room.getName().equals(passager.getPlace().getName()))
+				if (room.getName().equals(passager.getPlace().getName())) {
 					passager.setPlace(room);
+				}
 
 		passager_number = Rocket_passageres.size();
 
