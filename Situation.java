@@ -32,8 +32,7 @@ class Situation
 	{
 		LinkedList<Rocket_passager> list = rocket.getRocket_passageres();
 		for (Rocket_passager  passager: list) {
-			System.out.println("Passager: "+ passager.getName() + " " + passager.getKnowledge() +
-					" " + passager.getPlace());
+			System.out.println("Passager: "+ passager);
 		}
 	}
 
@@ -60,64 +59,11 @@ class Situation
             if (Rocket_passageres.get(current_passager).getStatus() == Status.SLEEP) {
                 System.out.println(Rocket_passageres.get(current_passager).getName() + " спит и некуда не пойдёт");
             } else {
-                try {
-                    walk(current_passager);
-                } catch (nadoelo_walk e) //Если некуда идти
-                {
-                    e.where_stop();
-                    System.out.println("Комнат, куда можно пойти, больше нет. А возвращаться назад неохото...");
-                    System.out.println("Посмотрим, пойдёт ли куда-нибудь кто-то ещё");
-                    System.out.println();
-                }
+				new Thread(Rocket_passageres.get(current_passager)).start();
             }
 		}
 	}
 
-	private static void walk(int passager) throws nadoelo_walk
-    {
-        System.out.printf("Затаив дыхание, подопытный номер %s отправляется в свой нелегкий путь.\n",
-                Rocket_passageres.get(passager).getName());
-        System.out.printf("Текущее местоположение: %s\n\n", Rocket_passageres.get(passager).getPlace().getPlaceName());
-
-        while (true) {
-            if (Rocket_passageres.get(passager).getPlace().getNextRoom() == null ||
-					Rocket_passageres.get(passager).already_be_here()) {
-				throw new nadoelo_walk(Rocket_passageres.get(passager).getPlace());
-			}
-            //if Knowledge Bad have chance stay this some time
-            if (Rocket_passageres.get(passager).getKnowledge() == RocketKnowledge.BAD) {
-                //While can't go from this room
-                find_output(passager);
-            }
-
-            room_activities(passager);
-
-            //GO to the next room
-            Rocket_passageres.get(passager).move();
-            System.out.println();
-        }
-
-    }
-
-    private static void find_output(int passager)
-    {
-        while (!Rocket_passageres.get(passager).getPlace().go_out()) {
-            Rocket_passageres.get(passager).setStatus(Status.NERVOUS);
-            System.out.printf("%s не может найти двери и обходить комнату вокруг\n", Rocket_passageres.get(passager).getName());
-
-            System.out.printf("%s теряет самообладание. Опять...\n", Rocket_passageres.get(passager).getName());
-        }
-        if (Rocket_passageres.get(passager).getPlace().getChance_go_out() != 1)
-            System.out.printf("%s наконец-то находит дверь\n", Rocket_passageres.get(passager).getName());
-    }
-
-    private static void room_activities(int passager)
-    {
-        //up_stairs if room have stairs
-        Rocket_passageres.get(passager).up_stairs();
-        //activity with Bottom in Room
-        Rocket_passageres.get(passager).getPlace().room_activity(Rocket_passageres.get(passager));
-    }
 
 	private Rocket initialize() {
 		System.out.println();
