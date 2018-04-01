@@ -11,14 +11,19 @@ public class Room
 	protected Room next_room2;
 	protected HashSet<Room> more_next_rooms;
 	protected Bottom bottom;
+	protected int max_size, people_here;
 	protected Map<String, Boolean> items = new HashMap<> ();
 	static Random random = new Random();
+	private HashSet<String> passager_here;
 {
 	next_room2 = null;
 	items.put("stairs", false);
 	items.put("botton", false);
 	items.put("table", false);
 	items.put("tumbler_light",false);
+	passager_here = new HashSet<>();
+	max_size = (int)(Math.random()*5+1);
+	people_here = 0;
 }
 	public void addBottom(Bottom bottom)
 	{
@@ -199,4 +204,33 @@ public class Room
 	public Room getNext_room2() {return next_room2;}
 	public void setNext_room2(Room next_room) {this.next_room2 = next_room;}
 
+	void go_into_this_room(String name) {
+    	if (can_add_people()) {
+			passager_here.add(name);
+			people_here++;
+		}
+    	else
+			System.out.println("Can't add. Room is full");
+	}
+
+	void go_from_this_room(String name) {
+		if (people_here <= 0) {
+			System.out.println("Can't remove. Room is empty");
+			System.out.println(this.name + "  пассажиры" + passager_here);
+		}
+		else {
+			people_here--;
+			passager_here.remove(name);
+		}
+	}
+
+	ArrayList<String> here() {
+		if (passager_here.isEmpty())
+			return null;
+		return new ArrayList<String>(passager_here);
+	}
+
+	Boolean can_add_people() {
+		return people_here <= max_size;
+	}
 }

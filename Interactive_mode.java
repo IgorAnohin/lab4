@@ -1,3 +1,4 @@
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -18,6 +19,7 @@ import java.util.LinkedList;
  * @autor Anokhin Igor
  * @version 1.0.0
  */
+
 public class Interactive_mode {
 	private static boolean DEBUG = false;
 	private static int LAST_INDEX = -1;
@@ -45,7 +47,7 @@ public class Interactive_mode {
 	 */
 	public static void main(String [] args)
 	{
-        
+
 		Scanner input = new Scanner(System.in);
 		while (!exit)
 		{
@@ -166,7 +168,7 @@ public class Interactive_mode {
 	static void remove_element(Rocket_passager passager)
 	{
 		Rocket rocket = read_from_xml(Rocket.class, collection_passagers_path);
-		for (int i = 0; i <= rocket.getRocket_passageres().size(); i++)
+		for (int i = 0; i < rocket.getRocket_passageres().size(); i++)
 			if (passager == rocket.getRocket_passageres().get(i)) {
 				remove(i);
 				break;
@@ -361,3 +363,8 @@ public class Interactive_mode {
 	    	}
 	}
 }
+
+//add more friendly json add
+//add html server
+
+//add logger
