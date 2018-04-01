@@ -13,7 +13,6 @@ class Situation
 	static LinkedList<Room> Rooms = new LinkedList<>();
 	static LinkedList<Device> Devices = new LinkedList<>();
 
-
 	public Situation(String path_to_passagers, String path_to_rooms)
 	{
 		rocket = initialize(path_to_passagers, path_to_rooms);
@@ -38,7 +37,12 @@ class Situation
 
 	public static void start_simulation()
 	{
-
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				Interactive_mode.writer_passageres(Rocket_passageres);
+				System.out.println("Эту программу не сломать!!");
+			}
+		});
 		//Anonim class add
 		Bottom start = new Bottom(
 				new Power_interface() {
