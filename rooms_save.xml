@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<roomList>
+    <rooms>
+        <chance_go_out>0.5123858738333844</chance_go_out>
+        <placeName>Комната 0</placeName>
+    </rooms>
+    <rooms>
+        <chance_go_out>0.8822131341857525</chance_go_out>
+        <next_room1>
+            <chance_go_out>0.5123858738333844</chance_go_out>
+            <placeName>Комната 0</placeName>
+        </next_room1>
+        <next_room2>
+            <chance_go_out>0.5123858738333844</chance_go_out>
+            <placeName>Комната 0</placeName>
+        </next_room2>
+        <placeName>Лифт 1</placeName>
+    </rooms>
+    <rooms>
+        <chance_go_out>0.2134567698242058</chance_go_out>
+        <next_room1>
+            <chance_go_out>0.5123858738333844</chance_go_out>
+            <placeName>Комната 0</placeName>
+        </next_room1>
+        <next_room2>
+            <chance_go_out>0.8822131341857525</chance_go_out>
+            <next_room1>
+                <chance_go_out>0.5123858738333844</chance_go_out>
+                <placeName>Комната 0</placeName>
+            </next_room1>
+            <next_room2>
+                <chance_go_out>0.5123858738333844</chance_go_out>
+                <placeName>Комната 0</placeName>
+            </next_room2>
+            <placeName>Лифт 1</placeName>
+        </next_room2>
+        <placeName>Комната 2</placeName>
+    </rooms>
+    <rooms>
+        <chance_go_out>0.76418905930376</chance_go_out>
+        <placeName>Лифт 3</placeName>
+    </rooms>
+    <rooms>
+        <chance_go_out>0.29683175198988276</chance_go_out>
+        <next_room1>
+            <chance_go_out>0.8822131341857525</chance_go_out>
+            <next_room1>
+                <chance_go_out>0.5123858738333844</chance_go_out>
+                <placeName>Комната 0</placeName>
+            </next_room1>
+            <next_room2>
+                <chance_go_out>0.5123858738333844</chance_go_out>
+                <placeName>Комната 0</placeName>
+            </next_room2>
+            <placeName>Лифт 1</placeName>
+        </next_room1>
+        <next_room2>
+            <chance_go_out>0.5123858738333844</chance_go_out>
+            <placeName>Комната 0</placeName>
+        </next_room2>
+        <placeName>Комната 4</placeName>
+    </rooms>
+    <rooms>
+        <chance_go_out>0.34796874655974963</chance_go_out>
+        <next_room1>
+            <chance_go_out>0.5123858738333844</chance_go_out>
+            <placeName>Комната 0</placeName>
+        </next_room1>
+        <placeName>Комната 5</placeName>
+    </rooms>
+    <rooms>
+        <chance_go_out>0.9878228898205808</chance_go_out>
+        <next_room1>
+            <chance_go_out>0.76418905930376</chance_go_out>
+            <placeName>Лифт 3</placeName>
+        </next_room1>
+        <placeName>Комната 6</placeName>
+    </rooms>
+    <rooms>
+        <chance_go_out>0.0971894538121475</chance_go_out>
+        <next_room1>
+            <chance_go_out>0.8822131341857525</chance_go_out>
+            <next_room1>
+                <chance_go_out>0.5123858738333844</chance_go_out>
+                <placeName>Комната 0</placeName>
+            </next_room1>
+            <next_room2>
+                <chance_go_out>0.5123858738333844</chance_go_out>
+                <placeName>Комната 0</placeName>
+            </next_room2>
+            <placeName>Лифт 1</placeName>
+        </next_room1>
+        <next_room2>
+            <chance_go_out>0.2134567698242058</chance_go_out>
+            <next_room1>
+                <chance_go_out>0.5123858738333844</chance_go_out>
+                <placeName>Комната 0</placeName>
+            </next_room1>
+            <next_room2>
+                <chance_go_out>0.8822131341857525</chance_go_out>
+                <next_room1>
+                    <chance_go_out>0.5123858738333844</chance_go_out>
+                    <placeName>Комната 0</placeName>
+                </next_room1>
+                <next_room2>
+                    <chance_go_out>0.5123858738333844</chance_go_out>
+                    <placeName>Комната 0</placeName>
+                </next_room2>
+                <placeName>Лифт 1</placeName>
+            </next_room2>
+            <placeName>Комната 2</placeName>
+        </next_room2>
+        <placeName>Лифт 7</placeName>
+    </rooms>
+    <rooms>
+        <chance_go_out>0.5972759219602072</chance_go_out>
+        <next_room1>
+            <chance_go_out>0.8822131341857525</chance_go_out>
+            <next_room1>
+                <chance_go_out>0.5123858738333844</chance_go_out>
+                <placeName>Комната 0</placeName>
+            </next_room1>
+            <next_room2>
+                <chance_go_out>0.5123858738333844</chance_go_out>
+                <placeName>Комната 0</placeName>
+            </next_room2>
+            <placeName>Лифт 1</placeName>
+        </next_room1>
+        <next_room2>
+            <chance_go_out>0.8822131341857525</chance_go_out>
+            <next_room1>
+                <chance_go_out>0.5123858738333844</chance_go_out>
+                <placeName>Комната 0</placeName>
+            </next_room1>
+            <next_room2>
+                <chance_go_out>0.5123858738333844</chance_go_out>
+                <placeName>Комната 0</placeName>
+            </next_room2>
+            <placeName>Лифт 1</placeName>
+        </next_room2>
+        <placeName>Комната 8</placeName>
+    </rooms>
+</roomList>
