@@ -1,1 +1,4 @@
 *.class
+out/
+.idea/
+lab4-master.iml
