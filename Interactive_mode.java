@@ -48,22 +48,26 @@ public class Interactive_mode {
 	 * Start loop, while user don't enter 'exit'
 	 * @param in, out
 	 */
-	Interactive_mode(BufferedReader in, OutputStream out, String inputLine) {
+	Interactive_mode(ObjectInputStream in, ObjectOutputStream out) {
 		this.out = out;
 		exit = false;
+		String inputLine;
+		System.out.println("HERE");
 		try {
-			do {
+			while ((inputLine = (String) in.readObject()) != null) {
 				System.out.println(inputLine);
-			    parse_input(inputLine);
+				parse_input(inputLine);
 
 				out.write(end_message.getBytes());
-			out.flush();
+				out.flush();
+			}
 
-			} while ((inputLine = in.readLine()) != null);
 		} catch (IOException e) {
 			System.out.println("Exception caught when trying to listen on port "
 					+ 8080 + " or listening for a connection");
 			System.out.println(e.getMessage());
+		} catch (ClassNotFoundException e) {
+			System.out.println("Непонятный Объект");
 		}
 	}
 	/**

@@ -85,7 +85,6 @@ public class Server {
         }
 
         private void write_to_browser() throws Throwable {
-            new Situation();
             writeResponse("<html><body><h1>Hello from Habrahabr</h1><font color=\"#0000ff\">участок текста, который нужно было окрасить в синий колор</font> </body></html>");
         }
 
@@ -100,9 +99,20 @@ public class Server {
             outputStream.flush();
         }
 
-        private void work_with_another_application(String s) {
+        private void work_with_another_application(String header) {
                 System.out.println("Another application was detected");
-                new Interactive_mode(br, outputStream, s);
+            System.out.println("Header:");
+            try {
+                System.out.println(header);
+                //br.close();
+                //outputStream.close();
+                ObjectOutputStream OutObject = new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream InObject = new ObjectInputStream(socket.getInputStream());
+                new Interactive_mode(InObject, OutObject);
+            } catch (IOException e)
+            {
+                System.out.println("Can't create Object Writers");
+            }
         }
 
     }

@@ -20,22 +20,24 @@ public class Main {
         ) {
             String userInput;
             Scanner input = new Scanner(System.in);
-            System.out.println("HERE1");
-            //ObjectOutputStream outobjects = new ObjectOutputStream(echoSocket.getOutputStream());
-            //ObjectInputStream inobjects = new ObjectInputStream(echoSocket.getInputStream());
-            System.out.println("HERE");
 
+
+            out.println("application header");
+            out.flush();
+
+            ObjectOutputStream OutObject = new ObjectOutputStream(echoSocket.getOutputStream());
+            ObjectInputStream InObject = new ObjectInputStream(echoSocket.getInputStream());
 
             while (true) {
                 userInput = input.nextLine();
-                out.println(userInput);
+                OutObject.writeObject(userInput);
                 out.flush();
+
                 String line = "";
                 byte[] qwe = new byte[100];
                 int bytesRead = 0;
                 do {
                         bytesRead = ois.read(qwe);
-                        //bytesRead = objects.read(qwe);
                         String server_message = new String(qwe, 0, bytesRead);
                         line += server_message;
                 } while (!line.endsWith(end_messages));
