@@ -13,9 +13,9 @@ class Situation
 	static LinkedList<Room> Rooms = new LinkedList<>();
 	static LinkedList<Device> Devices = new LinkedList<>();
 
-	public Situation(String path_to_passagers, String path_to_rooms)
+	public Situation(Room_list rooms, Rocket rocket_with_passagers)
 	{
-		rocket = initialize(path_to_passagers, path_to_rooms);
+		rocket = initialize(rooms, rocket_with_passagers);
 		print_passageres();
 		start_simulation();
 	}
@@ -87,13 +87,13 @@ class Situation
 	}
 
 
-	private Rocket initialize(String path_to_passageres, String path_to_romms) {
+	private Rocket initialize(Room_list rooms, Rocket rocket) {
 		System.out.println();
 		System.out.println("Генерируем карту:");
 
 		show_little_town();
 
-		Room_list rooms = Interactive_mode.read_from_xml(Room_list.class, path_to_romms);
+		System.out.println("Генирирую комнаты:");
 		Rooms = rooms.getRooms();
 		room_count = Rooms.size();
 		for(Room room : Rooms) {
@@ -113,8 +113,8 @@ class Situation
 			if (room.getNext_room2() != null) room.getNext_room2().set_new_next_room(room);
 		}
 
-		Rocket rocket = Interactive_mode.read_from_xml(Rocket.class, path_to_passageres);
 
+		System.out.println("Добавляю персонажей");
 		Rocket_passageres = rocket.getRocket_passageres();
 		for(Rocket_passager passager : Rocket_passageres)
 			for(Room room : Rooms)
