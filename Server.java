@@ -1,8 +1,16 @@
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Server {
 
@@ -84,9 +92,70 @@ public class Server {
             return web_input;
         }
 
+
         private void write_to_browser() throws Throwable {
-            writeResponse("<html><body><h1>Hello from Habrahabr</h1><font color=\"#0000ff\">участок текста, который нужно было окрасить в синий колор</font> </body></html>");
+            File debug_file = new File("1.txt");
+            debug_file.delete();
+            new Interactive_mode(debug_file);
+
+            FileInputStream read_for_browser = new FileInputStream(debug_file);
+
+            String output;
+            try (Stream<String> stream = Files.lines(Paths.get(debug_file.getPath()))) {
+                output = stream.map(this::set_pretty_output).map((s) -> "<p>" + s + "</p>").collect(Collectors.joining("\n"));
+            }
+
+            output = set_pretty_output(output);
+            System.out.println(output);
+
+            String space2000 = new String(new char[3000]).replace('\0', ' ');
+            writeResponse("<html>" +
+                    "<head> <meta charset=\"utf-8\"></head>" +
+                    "<body> <h1>WELCOME</h1>" +
+                    "<div>" + output + "</div>" +
+                    "<div>" + space2000 + "</div>" +
+                    " </body></html>");
         }
+
+        private String set_pretty_output(String text) {
+            if (text.startsWith("Генериру") || text.startsWith("Все походили")
+                    || text.startsWith("На кнопку") || text.endsWith("нелегкий путь."))
+                return "<font color=\"#0000ff\">" + text + "</font>";
+            else if (text.startsWith("Космический") ||
+                    text.startsWith("Генерирую"))
+                return "<font color=\"#00ff00\">" + text + "</font>";
+            else if (text.startsWith("Житель"))
+                return "<font color=\"#32CD32\">" + text + "</font>";
+            else if (text.startsWith("В нём живёт") || text.startsWith("Номер "))
+                return "<font color=\"#0000ff\">" + text + "</font>";
+            else if (text.startsWith("Никто тут"))
+                return "<font color=\"#8B0000\">" + text + "</font>";
+
+
+            else if (text.startsWith("Устройство"))
+                return "<font color=\"#32CD32\">" + text + "</font>";
+
+            else if (text.startsWith("Иници"))
+                return "<font color=\"#0000ff\">" + text + "</font>";
+            else if (text.startsWith("Passager") || text.startsWith("Имя") ||
+                    text.startsWith("Размер"))
+                return "<font color=\"#B0BBB0\">" + text + "</font>";
+
+
+            else if (text.startsWith("!!!!!"))
+                return "<font color=\"#0000ff\">" + text + "</font>";
+
+
+            else if (text.endsWith("не пойдёт") || text.startsWith("Комнат, куд")
+                    || text.endsWith("вокруг") || text.endsWith("Опять..."))
+                return "<font color=\"#8B0000\">" + text + "</font>";
+
+            else if (text.endsWith("в комнате"))
+                return "<font color=\"#32CD32\">" + text + "</font>";
+
+            return text;
+        }
+
 
         private void writeResponse(String s) throws Throwable {
             String response = "HTTP/1.1 200 OK\r\n" +
@@ -102,17 +171,47 @@ public class Server {
         private void work_with_another_application(String header) {
                 System.out.println("Another application was detected");
             System.out.println("Header:");
-            try {
                 System.out.println(header);
-                //br.close();
-                //outputStream.close();
-                ObjectOutputStream OutObject = new ObjectOutputStream(socket.getOutputStream());
-                ObjectInputStream InObject = new ObjectInputStream(socket.getInputStream());
-                new Interactive_mode(InObject, OutObject);
-            } catch (IOException e)
-            {
-                System.out.println("Can't create Object Writers");
-            }
+
+                boolean success = false;
+                while (!success) {
+                    try (
+                        ObjectOutputStream OutObject = new ObjectOutputStream(socket.getOutputStream());
+                        ObjectInputStream InObject = new ObjectInputStream(socket.getInputStream()); )
+                    {
+                        success = true;
+                        new Interactive_mode(InObject, OutObject);
+                    } catch (IOException ee)
+                    {
+
+                        /*/////
+                        try {
+                            byte b[] = new byte[1];
+                            SocketAddress a =
+                                    new InetSocketAddress(8082);
+                            ServerSocketChannel ss =
+                                    ServerSocketChannel.open();
+                            ss.bind(a);
+                            SocketChannel s = ss.accept();
+                            ByteBuffer f = ByteBuffer.wrap(b);
+
+                            f.clear();
+                            s.read(f);
+
+                            f.flip();
+                            s.write(f);
+                            s.close();
+                            ss.close();
+                        }
+                         catch (IOException e)
+                        {
+                            System.out.println("Can't create Channel. Try again...");
+
+                            return;
+                        }*/
+
+                    }
+                }
         }
 
     }
