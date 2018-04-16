@@ -18,7 +18,7 @@ public class Space_town {
     private ArrayList<town_civilian> civilians = new ArrayList<>();
 
     public Space_town(){
-        System.out.println("Космисечкий городок создан");
+        System.out.println("Космический городок создан");
         for (int i = 0; i < Math.round(Math.random()*5); i++)
             civilians.add(new town_civilian(i));
         System.out.println("В нём живёт "+civilians.size()+" человек");

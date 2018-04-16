@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.time.LocalTime;
 
-public class Human extends Animal
+public class Human extends Animal implements Serializable
 {
 	protected Size size;
 	protected Room place;

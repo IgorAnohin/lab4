@@ -1,9 +1,10 @@
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.util.*;
 
 @XmlRootElement
-public class Room
+public class Room implements Serializable
 {
 	protected double chance_go_out;
 	protected String name;

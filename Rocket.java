@@ -1,9 +1,10 @@
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.util.LinkedList;
 
 @XmlRootElement
-public class Rocket
+public class Rocket implements Serializable
 {
 
 	private LinkedList<Rocket_passager> Rocket_passageres;

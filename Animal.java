@@ -1,4 +1,6 @@
-public abstract class Animal
+import java.io.Serializable;
+
+public abstract class Animal implements Serializable
 {
 	protected String name;
 	protected Status status;

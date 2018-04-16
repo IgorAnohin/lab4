@@ -1,4 +1,6 @@
-public class Device implements Power_interface
+import java.io.Serializable;
+
+public class Device implements Power_interface, Serializable
 {
 	protected Power power;
 	protected String name;

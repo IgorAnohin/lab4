@@ -4,12 +4,13 @@ import com.sun.tracing.dtrace.FunctionName;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 
 @XmlRootElement(name = "passager")
-public class Rocket_passager extends Human implements Movable, Runnable
+public class Rocket_passager extends Human implements Movable, Runnable, Serializable
 {
 	private HashSet<Room> be_here;
 	private RocketKnowledge knowledge;
