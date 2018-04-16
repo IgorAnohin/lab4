@@ -86,7 +86,6 @@ public class Main {
     private static String send_message(Scanner input, Socket echoSocket) throws Exception {
         String inputline;
         ObjectOutputStream OutObject = new ObjectOutputStream(echoSocket.getOutputStream());
-        System.out.println("HERE");
         inputline = input.nextLine();
         System.out.println(inputline);
         OutObject.writeObject(inputline);
