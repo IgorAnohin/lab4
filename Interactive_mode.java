@@ -28,7 +28,7 @@ public class Interactive_mode {
 
 	public static String collection_passagers_path = "passageres.xml";
 	public static String collection_rooms_path = "rooms.xml";
-	OutputStream out;
+	ObjectOutputStream out;
 
 
 	private boolean exit;
@@ -45,20 +45,42 @@ public class Interactive_mode {
 			"'debug' for add bedugging messages\n";
 
 	/**
-	 * Start loop, while user don't enter 'exit'
-	 * @param in, out
+	 * Start situation
+	 * @param file_for_output
 	 */
+	Interactive_mode(File file_for_output) {
+	    try {
+	    	PrintStream SystemOut = System.out;
+			PrintStream stream = new PrintStream(file_for_output);
+			System.setOut(stream);
+			int n = Thread.activeCount();
+			Room_list rooms = Interactive_mode.read_from_xml(Room_list.class, collection_rooms_path);
+			Rocket rocket = Interactive_mode.read_from_xml(Rocket.class, collection_passagers_path);
+			new Situation(rooms, rocket);
+			while (Thread.activeCount() > n) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e)
+				{}
+			}
+			System.out.println("Все походили");
+
+			System.setOut(SystemOut);
+		} catch (IOException e) {
+			System.out.println("Ну вот нельзя отправить нормальный ответ");
+		}
+	}
+
 	Interactive_mode(ObjectInputStream in, ObjectOutputStream out) {
 		this.out = out;
 		exit = false;
 		String inputLine;
-		System.out.println("HERE");
 		try {
 			while ((inputLine = (String) in.readObject()) != null) {
 				System.out.println(inputLine);
 				parse_input(inputLine);
 
-				out.write(end_message.getBytes());
+				out.writeObject(end_message);
 				out.flush();
 			}
 
@@ -85,63 +107,69 @@ public class Interactive_mode {
 		switch (main_argument)
 		{
 			case "debug":
-				out.write("Debug enabled".getBytes());
+				out.writeObject("Debug enabled");
 				DEBUG = true;
 				break;
 			case "exit":
 				exit = true;
-				out.write("Program will be close".getBytes());
+				out.writeObject("Program will be close");
 				break;
 			case "remove_last":
 			    try {
 					remove_last();
-					out.write("Last element was removed\n".getBytes());
+					out.writeObject("Last element was removed\n");
 				} catch (NullPointerException e) {
-					out.write("Can't open file, may be you should change path".getBytes());
+					out.writeObject("Can't open file, may be you should change path");
 				}
 				break;
 			case "remove_first":
 				try {
 					remove_first();
-					out.write("First element was removed\n".getBytes());
+					out.writeObject("First element was removed\n");
 				} catch (NullPointerException e) {
-					out.write("Can't open file, may be you should change path".getBytes());
+					out.writeObject("Can't open file, may be you should change path");
 				}
 				break;
 			case "add":
 			    try {
 					add_element(get_json_element(sub_argument));
-					out.write("Element was successfully added\n".getBytes());
+					out.writeObject("Element was successfully added\n");
 				} catch (IllegalStateException e) {
-					out.write("Incorrect input".getBytes());
+					out.writeObject("Incorrect input");
 				} catch (NullPointerException e) {
-					out.write("Can't open file, may be you should change path".getBytes());
+					out.writeObject("Can't open file, may be you should change path");
 				}
 				break;
 			case "remove":
 				try {
 					remove_element(get_json_element(sub_argument));
-					out.write("Element was successfully removed\n".getBytes());
+					out.writeObject("Element was successfully removed\n");
 				} catch (IllegalStateException e) {
-						out.write("Incorrect input\n".getBytes());
+						out.writeObject("Incorrect input\n");
 				} catch (NullPointerException e) {
-						out.write("Can't open file, may be you should change path\n".getBytes());
+						out.writeObject("Can't open file, may be you should change path\n");
 				}
 				break;
 			case "import":
 				import_path(sub_argument);
-				out.write("Path was changed\n".getBytes());
+				out.writeObject("Path was changed\n");
 				break;
 			case "save_to":
 				try {
 			    	save_to(sub_argument);
-					out.write("Collection was successfully saved\n".getBytes());
+					out.writeObject("Collection was successfully saved\n");
 				} catch (NullPointerException e) {
-					out.write("Can't open file, may be you should change path\n".getBytes());
+					out.writeObject("Can't open file, may be you should change path\n");
 				}
 			    break;
 			case "start":
-				new Situation(collection_passagers_path, collection_rooms_path);
+				Room_list rooms = Interactive_mode.read_from_xml(Room_list.class, collection_rooms_path);
+				Rocket rocket = Interactive_mode.read_from_xml(Rocket.class, collection_passagers_path);
+				out.flush();
+				out.writeObject(rooms);
+				out.flush();
+				out.writeObject(rocket);
+				out.flush();
 				break;
 			case "random_start":
 				exit = true;
@@ -149,14 +177,14 @@ public class Interactive_mode {
 				break;
 			case "show":
 			    try {
-					out.write("Try to show collection\n".getBytes());
+					out.writeObject("Try to show collection\n");
 					show_list(new Rocket(), collection_passagers_path);
 				} catch (NullPointerException e) {
-					out.write("Can't open file, may be you should change path".getBytes());
+					out.writeObject("Can't open file, may be you should change path");
 				}
 				break;
 			default:
-				out.write(help.getBytes());
+				out.writeObject(help);
 				break;
 		}
 	}
@@ -206,7 +234,7 @@ public class Interactive_mode {
 			if (index == LAST_INDEX) index = rocket.getRocket_passageres().size() - 1;
 			rocket.getRocket_passageres().remove(index);
 		} else
-			out.write("Can't remove. Container empty".getBytes());
+			out.writeObject("Can't remove. Container empty");
 		write_to_xml(rocket, collection_passagers_path);
 	}
 
@@ -249,14 +277,14 @@ public class Interactive_mode {
 		Rocket_passager passager;
 		try {
 			JSON = element;
-			out.write(JSON.getBytes());
+			out.writeObject(JSON);
 		    passager = gson.fromJson(JSON, Rocket_passager.class);
 		    if (passager.getPlace() == null)
 		    	throw new Exception();
 		} catch (Exception e)
 		{
-			out.write("Не самое правильное значение".getBytes());
-			out.write("Сначала имя, потом знания, затем статус и местоположение".getBytes());
+			out.writeObject("Не самое правильное значение");
+			out.writeObject("Сначала имя, потом знания, затем статус и местоположение");
 			throw  new IllegalStateException();
 		}
 
@@ -269,7 +297,7 @@ public class Interactive_mode {
 			}
 		}
 		if (!room_exist) {
-			out.write("Такой комнаты не существует".getBytes());
+			out.writeObject("Такой комнаты не существует");
 			throw new IllegalStateException();
 		}
 
@@ -373,9 +401,9 @@ public class Interactive_mode {
 	private <T> void show_list( T object_to_write, String path) throws IOException
 	{
 	    	Rocket rocket = read_from_xml(Rocket.class, collection_passagers_path);
-			out.write("Passagers:\n".getBytes());
+			out.writeObject("Passagers:\n");
 	    	for (Rocket_passager auto : rocket.getRocket_passageres()) {
-				out.write(auto.toString().getBytes());
+				out.writeObject(auto.toString());
 	    	}
 	}
 }
