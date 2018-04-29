@@ -113,7 +113,7 @@ public class Server {
                     "<head> <meta charset=\"utf-8\"></head>" +
                     "<body> <h1>WELCOME</h1>" +
                     "<div>" + output + "</div>" +
-                    "<div>" + space2000 + "</div>" +
+                    //"<div>" + space2000 + "</div>" +
                     " </body></html>");
         }
 
@@ -161,7 +161,7 @@ public class Server {
             String response = "HTTP/1.1 200 OK\r\n" +
                     "Server: New server\r\n" +
                     "Content-Type: text/html\r\n" +
-                    "Content-Length: " + s.length() + "\r\n" +
+                    "Content-Length: " + s.getBytes().length + "\r\n" +
                     "Connection: close\r\n\r\n";
             String result = response + s;
             outputStream.write(result.getBytes());
