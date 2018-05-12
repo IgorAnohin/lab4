@@ -6,10 +6,11 @@ public class Human extends Animal implements Serializable
 	protected Size size;
 	protected Room place;
 	protected LocalTime create_time;
+	protected Color color;
 
 	Human(){
 		this.size = Size.NORMAL;
-		create_time = java.time.LocalTime.now();
+		this.color = Color.GREEN;
 	}
 
 	Human(String name, Status status, Room place)
@@ -17,8 +18,14 @@ public class Human extends Animal implements Serializable
 		this.place = place;
 		this.name = name;
 		this.status = status;
-		this.size = Size.NORMAL;
-		create_time = java.time.LocalTime.now();
+		double chance = Math.random();
+		if (chance < 0.33)
+			this.size = Size.NORMAL;
+		else if (chance < 0.66)
+			this.size = Size.BIG;
+		else
+			this.size = Size.LITTLE;
+		create_time = LocalTime.now();
 		System.out.printf("Персонаж: \"%s\" создан\n", name);
 		System.out.println("Его размер " + size);
 		System.out.println("Время создания: ");
@@ -30,7 +37,7 @@ public class Human extends Animal implements Serializable
 		this.name = name;
 		this.status = status;
 		this.size = Size.NORMAL;
-		create_time = java.time.LocalTime.now();
+		create_time = LocalTime.now();
 		System.out.printf("Персонаж: \"%s\" создан\n", name);
 		System.out.println("Его размер " + size);
 		System.out.println("Время создания: ");
@@ -61,7 +68,9 @@ public class Human extends Animal implements Serializable
 	}
 
 	public Size getSize() {return size;}
-	public LocalTime getCreate_time() {return create_time;}
+	public void setSize(Size size) {this.size = size;}
+	public Color getColor() {return color;}
+	public void setColor(Color color) {this.color = color;}
 
 }
 
