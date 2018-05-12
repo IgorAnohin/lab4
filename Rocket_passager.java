@@ -21,7 +21,6 @@ public class Rocket_passager extends Human implements Movable, Runnable, Seriali
 		super(name, status, place);
 		be_here = new HashSet<>();
 		this.knowledge = knowledge;
-		//this.place = place;
 	}
 
 	public Rocket_passager()
@@ -182,7 +181,7 @@ public class Rocket_passager extends Human implements Movable, Runnable, Seriali
 
     @Override
     public String toString () {
-		return "\nИмя: " + name +", знания: "+ knowledge + ", местоположение: " + place +
-				"\nРазмер "+ size + ", время создания: " + create_time + "\n";
+		return "\nИмя -> " + name +", сатус -> "+ status +", знания -> "+ knowledge + ", местоположение -> " + place +
+				",\nРазмер -> "+ size + ", цвет -> " + color + "\n";
 	}
 }
