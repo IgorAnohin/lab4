@@ -74,6 +74,10 @@
             <chance_go_out>0.76418905930376</chance_go_out>
             <placeName>Лифт 3</placeName>
         </next_room1>
+        <next_room2>
+            <chance_go_out>0.5123858738333844</chance_go_out>
+            <placeName>Комната 0</placeName>
+        </next_room2>
         <placeName>Комната 6</placeName>
     </rooms>
     <rooms>
