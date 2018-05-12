@@ -164,6 +164,7 @@ public class Room implements Serializable
 			hashcode *= 5;
 		if (items.get("tumbler_light") )
 			hashcode *= 7;
+		hashcode += name.hashCode();
 		return hashcode;
 	}
 
@@ -184,8 +185,9 @@ public class Room implements Serializable
 
 	public void set_new_next_room(Room room)
 	{
-		if (more_next_rooms == null)
+		if (more_next_rooms == null) {
 			more_next_rooms = new HashSet<>();
+		}
 		more_next_rooms.add(room);
 	}
 
