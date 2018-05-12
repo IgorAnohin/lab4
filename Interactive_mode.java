@@ -44,6 +44,20 @@ public class Interactive_mode {
 			"'save_to {path}' save list to new file\n" +
 			"'debug' for add bedugging messages\n";
 
+	Interactive_mode(String command, File file_for_output) {
+		try {
+			//PrintStream SystemOut = System.out;
+			//PrintStream stream = new PrintStream(file_for_output);
+			//System.setOut(stream);
+			System.out.println(command);
+			parse_input(command);
+			//out.flush();
+
+			//System.setOut(SystemOut);
+		} catch (Exception e) {
+			System.out.println("HELLo! " + e);
+		}
+	}
 	/**
 	 * Start situation
 	 * @param file_for_output
