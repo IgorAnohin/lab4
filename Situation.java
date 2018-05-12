@@ -96,23 +96,27 @@ class Situation
 		System.out.println("Генирирую комнаты:");
 		Rooms = rooms.getRooms();
 		room_count = Rooms.size();
-		for(Room room : Rooms) {
+
+		for (Room room : Rooms) {
+
 			for (Room nextroom : Rooms) {
+
 				if ((room.getNext_room1() != null) && (room.getNext_room1().getName().equals(nextroom.getName()))) {
 					room.setNext_room1(nextroom);
 					room.set_new_next_room(nextroom);
+					nextroom.set_new_next_room(room);
 				}
 				if ((room.getNext_room2() != null) && (room.getNext_room2().getName().equals(nextroom.getName()))) {
 					room.setNext_room2(nextroom);
 					room.set_new_next_room(nextroom);
+					nextroom.set_new_next_room(room);
 				}
 			}
-			System.out.println(room +" " + room.getNext_room1());
 
-			if (room.getNext_room1() != null) room.getNext_room1().set_new_next_room(room);
-			if (room.getNext_room2() != null) room.getNext_room2().set_new_next_room(room);
 		}
 
+		for(Room room : Rooms)
+			System.out.println(room +" соеднения с: \n" + room.more_next_rooms);
 
 		System.out.println("Добавляю персонажей");
 		Rocket_passageres = rocket.getRocket_passageres();
