@@ -10,15 +10,16 @@ class MainWindow extends JFrame {
 
     JLabel log_and_pass_label = new JLabel("Please, enter your login and password");
 
-    JLabel log_lab = new JLabel("Login:");
+    JLabel log_lab = new JLabel("     Login:");
     JTextField log_field = new JTextField("");
 
-    JLabel pas_lab = new JLabel("Password:");
+    JLabel pas_lab = new JLabel("     Password:");
     JPasswordField passwordField = new JPasswordField();
 
     JButton checkButton = new JButton();
 
     public MainWindow() {
+        this.pack();
         this.setVisible(true);
         this.setBounds(10,10,WIDTH_W,HEIGHT_W);
         //this.setResizable(false);
@@ -50,10 +51,14 @@ class MainWindow extends JFrame {
 
     void AddFields(JPanel panel, JLabel label, Component component) {
         JPanel pan = new JPanel();
-        pan.setLayout(new FlowLayout());
+        pan.setLayout(new BoxLayout(pan, BoxLayout.X_AXIS));
+        pan.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setPreferredSize(new Dimension(150,50));
         pan.add(label);
         component.setPreferredSize(new Dimension(150,50));
         pan.add(component);
+        pan.add(Box.createHorizontalGlue());
         panel.add(pan);
     }
 

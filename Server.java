@@ -1,3 +1,5 @@
+import client.Browser_answer;
+
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -94,27 +96,84 @@ public class Server {
 
 
         private void write_to_browser() throws Throwable {
-            File debug_file = new File("1.txt");
-            debug_file.delete();
-            new Interactive_mode(debug_file);
+                String output;
+                try (Stream<String> stream = Files.lines(Paths.get("src/Browser.html"))) {
+                    output = stream.collect(Collectors.joining("\n"));
+                }
 
-            FileInputStream read_for_browser = new FileInputStream(debug_file);
 
-            String output;
-            try (Stream<String> stream = Files.lines(Paths.get(debug_file.getPath()))) {
-                output = stream.map(this::set_pretty_output).map((s) -> "<p>" + s + "</p>").collect(Collectors.joining("\n"));
+
+            int n = Thread.activeCount();
+            Room_list rooms = Interactive_mode.read_from_xml(Room_list.class, Interactive_mode.collection_rooms_path);
+            Rocket rocket = Interactive_mode.read_from_xml(Rocket.class, Interactive_mode.collection_passagers_path);
+            String temp_string = "";
+            for (Rocket_passager passanger : rocket.getRocket_passageres()) {
+                System.out.println(passanger);
+                temp_string += "passangeres.push({name:\"" + passanger.getPlace().toString() + "\", " +
+                        "size:\"" +passanger.getSize() +"\", " +
+                        "nname:\"" +passanger.getName() +"\", " +
+                        "status:\"" +passanger.getStatus() +"\", " +
+                        "color:\"" +passanger.getColor() + "\"});\n";
+                System.out.println("LOOP");
             }
+            temp_string += "iter.push(passangeres);\n" +
+                    "passangeres = [];\n";
+            new Situation(rooms, rocket);
 
-            output = set_pretty_output(output);
+            while (Thread.activeCount() > n) {
+                for (Rocket_passager passanger : rocket.getRocket_passageres()) {
+                    temp_string += "passangeres.push({name:\""+ passanger.getPlace().toString() + "\", " +
+                            "size:\"" +passanger.getSize() +"\", " +
+                            "nname:\"" +passanger.getName() +"\", " +
+                            "status:\"" +passanger.getStatus() +"\", " +
+                            "color:\"" +passanger.getColor() + "\"});\n";
+                    System.out.println("LOOP");
+                    try {
+                        Thread.sleep(250);
+                    } catch (InterruptedException e)
+                    {}
+                }
+                temp_string += "iter.push(passangeres);\n" +
+                        "passangeres = [];\n";
+            }
+            output = temp_string + output;
+            System.out.println("Все походили");
+                output =
+                        "<!DOCTYPE html>\n" +
+                        "<html>\n" +
+                        "<head>\n" +
+                        "<meta charset=\"utf-8\">\n" +
+                        "</head>\n" +
+                        "<body>\n" +
+                        "<canvas id=\"myCanvas\" width=\"1300\" height=\"700\" style=\"border:1px solid #d3d3d3;\">" +
+                        " Your browser does not support the HTML5 canvas tag.</canvas>\n" +
+                        "<script>\n" +
+                        "var iter = [];\n" +
+                        "var passangeres = []; \n" + output;
+            System.out.println("HERE3");
             System.out.println(output);
+                writeResponse(output);
+            //File debug_file = new File("1.txt");
+            //debug_file.delete();
+            //new Interactive_mode(debug_file);
 
-            String space2000 = new String(new char[3000]).replace('\0', ' ');
-            writeResponse("<html>" +
-                    "<head> <meta charset=\"utf-8\"></head>" +
-                    "<body> <h1>WELCOME</h1>" +
-                    "<div>" + output + "</div>" +
-                    //"<div>" + space2000 + "</div>" +
-                    " </body></html>");
+            //FileInputStream read_for_browser = new FileInputStream(debug_file);
+
+            //String output;
+            //try (Stream<String> stream = Files.lines(Paths.get(debug_file.getPath()))) {
+            //    output = stream.map(this::set_pretty_output).map((s) -> "<p>" + s + "</p>").collect(Collectors.joining("\n"));
+            //}
+
+            //output = set_pretty_output(output);
+            //System.out.println(output);
+
+            //String space2000 = new String(new char[3000]).replace('\0', ' ');
+            //writeResponse("<html>" +
+            //        "<head> <meta charset=\"utf-8\"></head>" +
+            //        "<body> <h1>WELCOME</h1>" +
+            //        "<div>" + output + "</div>" +
+            //        //"<div>" + space2000 + "</div>" +
+            //        " </body></html>");
         }
 
         private String set_pretty_output(String text) {

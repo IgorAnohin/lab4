@@ -1,6 +1,8 @@
+import javafx.event.ActionEvent;
+
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -8,8 +10,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
-class AddWindow extends JFrame {
+abstract class WindowCollectionCommun extends JFrame {
 
+    protected String command = "none";
     final static int WIDTH_W = 500;
     final static int HEIGHT_W = 500;
     boolean success_add;
@@ -19,19 +22,62 @@ class AddWindow extends JFrame {
 
     JLabel addlabel = new JLabel("Please, fill some fields");
 
-    JButton checkButton = new JButton("Add");
+    JButton checkButton = new JButton("abstract");
     JButton cancelButton = new JButton("Cancel");
 
-    JTextField[] fields = {
-            new JTextField("123"),
-            new JTextField("AWAKE"),
-            new JTextField("Лифт 1"),
-            new JTextField("BAD"),
-            new JTextField("BIG"),
-            new JTextField("GREEN")
+    String [] statuses = {"AWAKE", "SLEEP"};
+    String [] rooms = {"Комната 0",
+                        "Лифт 1",
+                        "Комната 2",
+                        "Лифт 3",
+                        "Комната 4",
+                        "Комната 5",
+                        "Комната 6",
+                        "Лифт 7",
+                        "Комната 8"
+            };
+    String [] knowledges = {"BAD", "GOOD"};
+    String [] sizes = {"BIG", "NORMAL", "LITTLE"};
+    String [] colors = {"GREEN", "BLUE", "YELLOW"};
+
+
+    JComboBox[] boxes = {
+            new JComboBox(statuses),
+            new JComboBox(rooms),
+            new JComboBox(knowledges),
+            new JComboBox(sizes),
+            new JComboBox(colors)
     };
 
-    public AddWindow(GameWindow parent) {
+    JTextField [] fields = {
+            new JTextField("123"),
+            new JTextField("SLEEP"),
+            new JTextField("Комната 8"),
+            new JTextField("GOOD"),
+            new JTextField("LITTLE"),
+            new JTextField("YELLOW")
+    };
+
+    public WindowCollectionCommun(GameWindow parent) {
+        /////////////////////////
+        int i = 1;
+        for (JComboBox componentt : boxes) {
+            final int j = i;
+            //System.out.println(j);
+            //System.out.println(componentt.getItemCount());
+            componentt.setSelectedIndex(componentt.getItemCount()-1);
+            ActionListener actionListener = new ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    JComboBox box = (JComboBox)e.getSource();
+                    String item = (String)box.getSelectedItem();
+                    fields[j].setText(item);
+                }
+            };
+            componentt.addActionListener(actionListener);
+            i++;
+        }
+        /////////////////////////
         this.parent = parent;
         success_add = false;
 
@@ -48,16 +94,20 @@ class AddWindow extends JFrame {
         panel.add(addlabel);
 
         JLabel[] labels = {
-                new JLabel("Name"),
-                new JLabel("Status"),
-                new JLabel("Room"),
-                new JLabel("Knowledge"),
-                new JLabel("Size"),
-                new JLabel("Color"),
+                new JLabel("    Name"),
+                new JLabel("    Status"),
+                new JLabel("    Room"),
+                new JLabel("    Knowledge"),
+                new JLabel("    Size"),
+                new JLabel("    Color"),
         };
 
-        for (int i = 0; i < 6; i++)
-            AddFields(panel, labels[i], fields[i]);
+        fields[0].setAlignmentX(Component.RIGHT_ALIGNMENT);
+        AddFields(panel, labels[0], fields[0]);
+        for (i = 0; i < 5; i++) {
+            //boxes[i].setAlignmentX(Component.RIGHT_ALIGNMENT);
+            AddFields(panel, labels[i], boxes[i]);
+        }
 
         addButtonFields(panel);
 
@@ -77,7 +127,7 @@ class AddWindow extends JFrame {
                 super.mouseClicked(e);
 
                 success_add = false;
-                AddWindow.super.setVisible(false);
+                WindowCollectionCommun.super.setVisible(false);
                 parent.setEnabled(true);
 
             }
@@ -87,10 +137,17 @@ class AddWindow extends JFrame {
 
     void AddFields(JPanel panel, JLabel label, Component component) {
         JPanel pan = new JPanel();
-        pan.setLayout(new FlowLayout());
+        pan.setLayout(new BoxLayout(pan, BoxLayout.X_AXIS));
+        pan.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setPreferredSize(new Dimension(150,50));
         pan.add(label);
         component.setPreferredSize(new Dimension(150,50));
+
+
+        pan.add(Box.createHorizontalGlue());
         pan.add(component);
+        pan.add(Box.createRigidArea(new Dimension(100,0)));
         panel.add(pan);
     }
 
@@ -116,7 +173,7 @@ class AddWindow extends JFrame {
                     System.out.println("Can't create file");
                 }
 
-                new Interactive_mode("add " + add_str, debug_file);
+                new Interactive_mode(command + " " + add_str, debug_file);
 
                 boolean success = false;
                 ObjectInputStream stre = null;
@@ -125,10 +182,10 @@ class AddWindow extends JFrame {
                     stre = new ObjectInputStream(new FileInputStream(debug_file));
                     temp = (String) stre.readObject();
                     temp = (String) stre.readObject();
-                    success = temp.startsWith("Element was successfully added");
+                    success = temp.startsWith("Element was successfully");
 
                 } catch (IOException ee) {
-                    System.out.println("Can't find file");
+                    System.out.println("Can't find file with command output");
                 } catch (ClassNotFoundException ee) {
                     System.out.println("Can't find class String!!");
                 }
@@ -143,12 +200,11 @@ class AddWindow extends JFrame {
                         fields[4].getText(),
                         fields[5].getText()
                     };
-                    AddWindow.super.setVisible(false);
+                    WindowCollectionCommun.super.setVisible(false);
                     parent.setEnabled(true);
 
                     parent.table.removeAll();
                     parent.table.setModel(parent.addDataToTableModel(-1));
-                    //tableModel.addRow(success_data);
 
                 } else {
                     addlabel.setText("Что-то введено не так");
@@ -156,4 +212,26 @@ class AddWindow extends JFrame {
             }
         });
     }
+}
+
+
+class DeleteWindow extends WindowCollectionCommun {
+
+    public DeleteWindow(GameWindow parent) {
+        super(parent);
+        checkButton.setText("Delete");
+        command = "remove";
+    }
+
+}
+
+
+class AddWindow extends WindowCollectionCommun {
+
+    public AddWindow(GameWindow parent) {
+        super(parent);
+        checkButton.setText("Add");
+        command = "add";
+    }
+
 }

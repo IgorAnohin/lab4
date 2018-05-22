@@ -1,4 +1,4 @@
-import java.util.LinkedList;
+/*import java.util.ConcurrentLinkedDeque;
 import java.util.Random;
 
 class Situation
@@ -9,13 +9,13 @@ class Situation
 
 	static Rocket rocket;
 
-	static LinkedList<Rocket_passager> Rocket_passageres = new LinkedList<>();
-	static LinkedList<Room> Rooms = new LinkedList<>();
-	static LinkedList<Device> Devices = new LinkedList<>();
+	static ConcurrentLinkedDeque<Rocket_passager> Rocket_passageres = new ConcurrentLinkedDeque<>();
+	static ConcurrentLinkedDeque<Room> Rooms = new ConcurrentLinkedDeque<>();
+	static ConcurrentLinkedDeque<Device> Devices = new ConcurrentLinkedDeque<>();
 
-	public Situation(Room_list rooms, Rocket rocket_with_passagers)
+	public Situation(String path_to_passagers, String path_to_rooms)
 	{
-		rocket = initialize(rooms, rocket_with_passagers);
+		rocket = initialize(path_to_passagers, path_to_rooms);
 		print_passageres();
 		start_simulation();
 	}
@@ -29,7 +29,7 @@ class Situation
 
 	public static void print_passageres()
 	{
-		LinkedList<Rocket_passager> list = rocket.getRocket_passageres();
+		ConcurrentLinkedDeque<Rocket_passager> list = rocket.getRocket_passageres();
 		for (Rocket_passager  passager: list) {
 			System.out.println("Passager: "+ passager);
 		}
@@ -39,7 +39,7 @@ class Situation
 	{
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
-				//Interactive_mode.writer_passageres(Rocket_passageres);
+				Interactive_mode.writer_passageres(Rocket_passageres);
 				System.out.println("Эту программу не сломать!!");
 			}
 		});
@@ -87,38 +87,34 @@ class Situation
 	}
 
 
-	private Rocket initialize(Room_list rooms, Rocket rocket) {
+	private Rocket initialize(String path_to_passageres, String path_to_romms) {
 		System.out.println();
 		System.out.println("Генерируем карту:");
 
 		show_little_town();
 
-		System.out.println("Генирирую комнаты:");
+		Room_list rooms = Interactive_mode.read_from_xml(Room_list.class, path_to_romms);
 		Rooms = rooms.getRooms();
 		room_count = Rooms.size();
-
-		for (Room room : Rooms) {
-
+		for(Room room : Rooms) {
 			for (Room nextroom : Rooms) {
-
 				if ((room.getNext_room1() != null) && (room.getNext_room1().getName().equals(nextroom.getName()))) {
 					room.setNext_room1(nextroom);
 					room.set_new_next_room(nextroom);
-					nextroom.set_new_next_room(room);
 				}
 				if ((room.getNext_room2() != null) && (room.getNext_room2().getName().equals(nextroom.getName()))) {
 					room.setNext_room2(nextroom);
 					room.set_new_next_room(nextroom);
-					nextroom.set_new_next_room(room);
 				}
 			}
+			System.out.println(room +" " + room.getNext_room1());
 
+			if (room.getNext_room1() != null) room.getNext_room1().set_new_next_room(room);
+			if (room.getNext_room2() != null) room.getNext_room2().set_new_next_room(room);
 		}
 
-		for(Room room : Rooms)
-			System.out.println(room +" соеднения с: \n" + room.more_next_rooms);
+		Rocket rocket = Interactive_mode.read_from_xml(Rocket.class, path_to_passageres);
 
-		System.out.println("Добавляю персонажей");
 		Rocket_passageres = rocket.getRocket_passageres();
 		for(Rocket_passager passager : Rocket_passageres)
 			for(Room room : Rooms)
@@ -234,10 +230,10 @@ class Situation
 			return(new Gravity_device("Выключатель света " + device_number, getRandomRoom(Rooms)));
 	}
 
-	static private Room getRandomRoom(LinkedList<Room> rooms)
+	static private Room getRandomRoom(ConcurrentLinkedDeque<Room> rooms)
 	{
 		if (rooms.size() < 1 ) return null;
 		int i = (int)Math.round (Math.random() * (rooms.size()-1) );
 		return  rooms.get(i);
 	}
-}
+}*/

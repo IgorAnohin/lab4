@@ -26,8 +26,8 @@ public class Interactive_mode {
 	private int LAST_INDEX = -1;
 	private static String end_message = "It's all.";
 
-	public static String collection_passagers_path = "passageres.xml";
-	public static String collection_rooms_path = "rooms.xml";
+	public static String collection_passagers_path = "src/passageres.xml";
+	public static String collection_rooms_path = "src/rooms.xml";
 	ObjectOutputStream out;
 
 
@@ -49,7 +49,7 @@ public class Interactive_mode {
 			//PrintStream SystemOut = System.out;
 			//PrintStream stream = new PrintStream(file_for_output);
 			//System.setOut(stream);
-			System.out.println(command);
+			this.out = new ObjectOutputStream(new FileOutputStream(file_for_output));
 			parse_input(command);
 			//out.flush();
 
@@ -94,7 +94,6 @@ public class Interactive_mode {
 				System.out.println(inputLine);
 				parse_input(inputLine);
 
-				out.writeObject(end_message);
 				out.flush();
 			}
 
@@ -201,6 +200,7 @@ public class Interactive_mode {
 				out.writeObject(help);
 				break;
 		}
+		out.writeObject(end_message);
 	}
 
 	/**
@@ -231,7 +231,7 @@ public class Interactive_mode {
 	{
 		Rocket rocket = read_from_xml(Rocket.class, collection_passagers_path);
 		for (int i = 0; i < rocket.getRocket_passageres().size(); i++)
-			if (passager == rocket.getRocket_passageres().get(i)) {
+			if (passager.toString().equals(rocket.getRocket_passageres().get(i).toString())) {
 				remove(i);
 				break;
 			}

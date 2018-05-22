@@ -25,10 +25,11 @@ class GameWindow extends JFrame {
     private static final int WIDTH_W = 1300;
     private static final int HEIGHT_W = 972;
 
-    JButton loadButton = new JButton("import");
-    JButton saveButton = new JButton("Save");
     JButton addButton = new JButton("Add");
     JButton deleteButton = new JButton("Delete");
+    JButton serverButton = new JButton("Server");
+    JButton firstremoveButton = new JButton("Remove first");
+    JButton lastremoveButton = new JButton("Remove last");
 
     GameWindow() {
         super("GOOD BOY");
@@ -52,14 +53,28 @@ class GameWindow extends JFrame {
     void addFunctionButtons(JPanel panel) {
 
         JPanel pan = new JPanel();
-        pan.setLayout(new GridLayout(2,1,0,1));
+        pan.setLayout(new GridLayout(5,1,0,1));
 
+        pan.add(serverButton);
+        serverButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                String []args = {
+                        "123",
+                        "456"
+                };
+                try {
+                    Server.main(args);
+                } catch (Throwable ee) {
+                    System.out.println("THROWABLE!!!");
+                }
 
-        //loadButton.setPreferredSize(new Dimension(300,300));
-        //pan.add(loadButton);
-        //saveButton.setPreferredSize(new Dimension(300,300));
-        //pan.add(saveButton);
+            }
+        });
+
         addButton.setPreferredSize(new Dimension(300,300));
+
         pan.add(addButton);
         addButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -68,16 +83,72 @@ class GameWindow extends JFrame {
 
                     GameWindow.super.setEnabled(false);
                     AddWindow window = new AddWindow(thisWindow);
-                System.out.println(window.success_data);
-                    //panel.remove(container);
-                    //container.removeAll();
-                    //addTable(panel, -1);
-
             }
         });
+
         pan.add(deleteButton);
+        deleteButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+
+                GameWindow.super.setEnabled(false);
+                DeleteWindow window = new DeleteWindow(thisWindow);
+            }
+        });
+
+        pan.add(firstremoveButton);
+        firstremoveButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                removeFirstElement();
+            }
+        });
+        pan.add(lastremoveButton);
+        lastremoveButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                removeLastElement();
+            }
+        });
 
         panel.add(pan, BorderLayout.WEST);
+
+    }
+
+    void removeFirstElement() {
+        removeElement("remove_first", "First element");
+    }
+
+    void removeLastElement() {
+        removeElement("remove_last", "Last element");
+    }
+
+    void removeElement(String command, String success_message) {
+        File debug_file = new File("GUI.txt");
+
+        new Interactive_mode(command, debug_file);
+
+        boolean success = false;
+        ObjectInputStream stre = null;
+        try {
+            String temp = null;
+            stre = new ObjectInputStream(new FileInputStream(debug_file));
+            temp = (String) stre.readObject();
+            success = temp.startsWith(success_message);
+
+        } catch (IOException ee) {
+            System.out.println("Can't find file with command output");
+        } catch (ClassNotFoundException ee) {
+            System.out.println("Can't find class String!!");
+        }
+
+        if (success) {
+            table.removeAll();
+            table.setModel(addDataToTableModel(-1));
+        }
 
     }
 
@@ -137,8 +208,20 @@ class GameWindow extends JFrame {
     private void add_sort_buttons(JPanel panel, String[] columnNames) {
 
         ArrayList<JButton> buttons = new ArrayList<JButton>();
-        for (String columnText : columnNames) {
+        for (int i = 0; i < columnNames.length; i++) {
+            String columnText = columnNames[i];
             JButton temp_but = new JButton(columnText);
+
+            final int column = i;
+            temp_but.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    table.removeAll();
+                    table.setModel(addDataToTableModel(column));
+                }
+            });
+
             buttons.add(temp_but);
         }
 
@@ -184,15 +267,14 @@ class GameWindow extends JFrame {
 
         list.remove(0);
         list.remove(0);
+        list.removeLast();
 
         if (column_sort_need > -1)
             Collections.sort(list, new Comparator<String[]>() {
                 @Override
                 public int compare(String[] o1, String[] o2) {
-                    return Collator.getInstance().compare(o1[1], o2[1]);
+                    return Collator.getInstance().compare(o1[column_sort_need], o2[column_sort_need]);
                 }
             });
-
-
     }
 }

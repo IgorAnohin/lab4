@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.io.Serializable;
 import java.time.LocalTime;
 
@@ -6,11 +7,9 @@ public class Human extends Animal implements Serializable
 	protected Size size;
 	protected Room place;
 	protected LocalTime create_time;
-	protected Color color;
+	protected MyColor color;
 
 	Human(){
-		this.size = Size.NORMAL;
-		this.color = Color.GREEN;
 	}
 
 	Human(String name, Status status, Room place)
@@ -69,8 +68,20 @@ public class Human extends Animal implements Serializable
 
 	public Size getSize() {return size;}
 	public void setSize(Size size) {this.size = size;}
-	public Color getColor() {return color;}
-	public void setColor(Color color) {this.color = color;}
+
+	public MyColor getColor() {return color;}
+	public void setColor(MyColor color) {this.color = color;}
+
+	public Color getCColor() {
+		if (color == MyColor.BLUE) {
+			return Color.BLUE;
+		} else if (color == MyColor.GREEN) {
+			return  Color.GREEN;
+		} else if (color == MyColor.YELLOW) {
+			return  Color.YELLOW;
+		}
+		return Color.DARK_GRAY;
+	}
 
 }
 

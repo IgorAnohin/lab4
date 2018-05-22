@@ -23,6 +23,19 @@ public class Rocket_passager extends Human implements Movable, Runnable, Seriali
 		this.knowledge = knowledge;
 	}
 
+	public Rocket_passager(String name, RocketKnowledge knowledge, Status status, Room place, Size size, MyColor color)
+	{
+	    this.name = name;
+	    this.knowledge = knowledge;
+	    this.status = status;
+	    this.place = place;
+	    this.size = size;
+	    this.color = color;
+
+		be_here = new HashSet<>();
+		this.knowledge = knowledge;
+	}
+
 	public Rocket_passager()
 	{
 		super();
@@ -90,11 +103,17 @@ public class Rocket_passager extends Human implements Movable, Runnable, Seriali
 			return false;
 		return true;
 	}
+
 	public boolean already_be_here()
 	{
 	    if (be_here == null)
 			be_here = new HashSet<>();
 		return be_here.contains(place);
+	}
+
+	public void prepair_rooms() {
+		if (be_here != null)
+			be_here = new HashSet<>();
 	}
 
 	@Override

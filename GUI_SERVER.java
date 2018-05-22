@@ -1,3 +1,5 @@
+import sun.nio.cs.ext.EUC_JP_LINUX;
+
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
@@ -18,7 +20,14 @@ import java.util.stream.Stream;
 public class GUI_SERVER {
     public static void main(String[] args) {
 
-        //MainWindow mainWindow = new MainWindow();
-        GameWindow window = new GameWindow();
+
+        try {
+            MainWindow mainWindow = new MainWindow();
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            SwingUtilities.updateComponentTreeUI(mainWindow);
+            //GameWindow window = new GameWindow();
+        }catch (Exception e) {
+            System.out.println("FAILED");
+        }
     }
 }
