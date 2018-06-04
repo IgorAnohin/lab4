@@ -9,10 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
+import java.util.*;
 
 class GameWindow extends JFrame {
 
@@ -21,19 +18,47 @@ class GameWindow extends JFrame {
     JPanel container;
     GameWindow thisWindow;
     DefaultTableModel tableModel;
+    ArrayList<JButton> buttons;
+
+    String lang = "ru";
+    ResourceBundle r;
+    JButton langButton = new JButton();
 
     private static final int WIDTH_W = 1300;
     private static final int HEIGHT_W = 972;
 
-    JButton addButton = new JButton("Add");
-    JButton deleteButton = new JButton("Delete");
-    JButton serverButton = new JButton("Server");
-    JButton firstremoveButton = new JButton("Remove first");
-    JButton lastremoveButton = new JButton("Remove last");
+    JButton addButton = new JButton();
+    JButton deleteButton = new JButton();
+    JButton serverButton = new JButton();
+    JButton firstremoveButton = new JButton();
+    JButton lastremoveButton = new JButton();
 
-    GameWindow() {
+
+    String[] columnNames;
+
+    GameWindow(String languge) {
         super("GOOD BOY");
+        this.lang = languge;
+        Locale dLocale = new Locale.Builder().setLanguage(lang).build();
+        r = ResourceBundle.getBundle("languages", dLocale, new UTF8Control());
         thisWindow = this;
+
+        addButton.setText(r.getString("add"));
+        deleteButton.setText(r.getString("delete"));
+        serverButton.setText(r.getString("server"));
+        firstremoveButton.setText(r.getString("remove_first"));
+        lastremoveButton.setText(r.getString("remove_last"));
+
+        langButton.setText(r.getString("lang_but"));
+
+        columnNames = new String[]{
+                r.getString("name"),
+                r.getString("status"),
+                r.getString("room"),
+                r.getString("knowledge"),
+                r.getString("size"),
+                r.getString("color")
+        };
 
         this.setVisible(true);
         this.setBounds(10,10,WIDTH_W,HEIGHT_W);
@@ -53,7 +78,11 @@ class GameWindow extends JFrame {
     void addFunctionButtons(JPanel panel) {
 
         JPanel pan = new JPanel();
-        pan.setLayout(new GridLayout(5,1,0,1));
+        pan.setLayout(new GridLayout(6,1,0,1));
+
+        pan.add(langButton);
+        langButton.setText(r.getString("lang_but"));
+        addChangeButtonListener();
 
         pan.add(serverButton);
         serverButton.addMouseListener(new MouseAdapter() {
@@ -82,7 +111,7 @@ class GameWindow extends JFrame {
                 super.mouseClicked(e);
 
                     GameWindow.super.setEnabled(false);
-                    AddWindow window = new AddWindow(thisWindow);
+                    AddWindow window = new AddWindow(thisWindow, lang);
             }
         });
 
@@ -93,7 +122,7 @@ class GameWindow extends JFrame {
                 super.mouseClicked(e);
 
                 GameWindow.super.setEnabled(false);
-                DeleteWindow window = new DeleteWindow(thisWindow);
+                DeleteWindow window = new DeleteWindow(thisWindow, lang);
             }
         });
 
@@ -137,6 +166,7 @@ class GameWindow extends JFrame {
             String temp = null;
             stre = new ObjectInputStream(new FileInputStream(debug_file));
             temp = (String) stre.readObject();
+            System.out.println("MESSAGE: " + temp);
             success = temp.startsWith(success_message);
 
         } catch (IOException ee) {
@@ -153,13 +183,6 @@ class GameWindow extends JFrame {
     }
 
     void addTable(JPanel panel, int sort_column) {
-
-        String[] columnNames = {"Имя",
-                "Статус",
-                "Знания",
-                "Местоположение",
-                "Размер",
-                "Цвет"};
 
         JPanel pan = new JPanel();
         pan.setLayout(new GridLayout(1,6,0,1));
@@ -189,12 +212,14 @@ class GameWindow extends JFrame {
 
         add_entries(sort_column);
 
-        String [] columnNames = {"Имя",
-                "Статус",
-                "Знания",
-                "Местоположение",
-                "Размер",
-                "Цвет"};
+        columnNames = new String[]{
+                r.getString("name"),
+                r.getString("status"),
+                r.getString("room"),
+                r.getString("knowledge"),
+                r.getString("size"),
+                r.getString("color")
+        };
 
         tableModel.setColumnIdentifiers(columnNames);
 
@@ -207,7 +232,7 @@ class GameWindow extends JFrame {
 
     private void add_sort_buttons(JPanel panel, String[] columnNames) {
 
-        ArrayList<JButton> buttons = new ArrayList<JButton>();
+        buttons = new ArrayList<JButton>();
         for (int i = 0; i < columnNames.length; i++) {
             String columnText = columnNames[i];
             JButton temp_but = new JButton(columnText);
@@ -276,5 +301,46 @@ class GameWindow extends JFrame {
                     return Collator.getInstance().compare(o1[column_sort_need], o2[column_sort_need]);
                 }
             });
+    }
+
+    void addChangeButtonListener() {
+
+        langButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+
+                if (lang.equals("ru"))
+                    lang = "en";
+                else if (lang.equals("en"))
+                    lang = "el";
+                else
+                    lang = "ru";
+
+                Locale dLocale = new Locale.Builder().setLanguage(lang).build();
+                r = ResourceBundle.getBundle("languages", dLocale, new UTF8Control());
+                addButton.setText(r.getString("add"));
+                deleteButton.setText(r.getString("delete"));
+                serverButton.setText(r.getString("server"));
+                firstremoveButton.setText(r.getString("remove_first"));
+                lastremoveButton.setText(r.getString("remove_last"));
+
+                langButton.setText(r.getString("lang_but"));
+                columnNames = new String[]{
+                        r.getString("name"),
+                        r.getString("status"),
+                        r.getString("room"),
+                        r.getString("knowledge"),
+                        r.getString("size"),
+                        r.getString("color")
+                };
+
+                int q = 0;
+                for (JButton temp_but : buttons) {
+                    temp_but.setText(columnNames[q]);
+                }
+
+            }
+        });
     }
 }
