@@ -9,6 +9,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
 import java.net.*;
 
@@ -23,7 +24,6 @@ import java.util.LinkedList;
 
 public class Interactive_mode {
 	private boolean DEBUG = false;
-	private int LAST_INDEX = -1;
 	private static String end_message = "It's all.";
 
 	public static String collection_passagers_path = "src/passageres.xml";
@@ -68,11 +68,12 @@ public class Interactive_mode {
 			PrintStream stream = new PrintStream(file_for_output);
 			System.setOut(stream);
 			int n = Thread.activeCount();
-			Room_list rooms = Interactive_mode.read_from_xml(Room_list.class, collection_rooms_path);
-			Rocket rocket = Interactive_mode.read_from_xml(Rocket.class, collection_passagers_path);
+			Room_list rooms = BlackMagic.read_from_xml(Room_list.class, collection_rooms_path);
+			Rocket rocket = BlackMagic.read_from_xml(Rocket.class, collection_passagers_path);
 			new Situation(rooms, rocket);
 			while (Thread.activeCount() > n) {
 				try {
+
 					Thread.sleep(1000);
 				} catch (InterruptedException e)
 				{}
@@ -113,10 +114,29 @@ public class Interactive_mode {
 	    String [] arguments = inputLine.split(" ",2);
 	    String main_argument = arguments[0];
 
-	    String sub_argument  = "";
-	    if (arguments.length > 1)
-	    	sub_argument = arguments[1];
+		BlackMagic magic = new BlackMagic(out);
+		java.lang.reflect.Method method;
 
+	    String sub_argument  = "";
+
+		try {
+	    	if (arguments.length > 1) {
+				sub_argument = arguments[1];
+				System.out.println(main_argument + " " + sub_argument);
+					method = BlackMagic.class.getMethod(main_argument, String.class);
+					method.invoke(magic, sub_argument);
+			} else {
+					method = BlackMagic.class.getMethod(main_argument);
+					System.out.println(main_argument);
+					method.invoke(magic);
+			}
+		} catch (SecurityException e) {
+		} catch (NoSuchMethodException e) {
+		} catch (InvocationTargetException e) {
+		} catch (IllegalArgumentException e) {
+		} catch (IllegalAccessException e) { }
+
+/*
 		switch (main_argument)
 		{
 			case "debug":
@@ -199,37 +219,75 @@ public class Interactive_mode {
 			default:
 				out.writeObject(help);
 				break;
-		}
+		}*/
 		out.writeObject(end_message);
+	}
+
+}
+
+class BlackMagic {
+	ObjectOutputStream out;
+	private int LAST_INDEX = -1;
+
+	BlackMagic(ObjectOutputStream out) {
+		this.out = out;
 	}
 
 	/**
 	 * wrapper remove method
 	 * call remove with last index of array
 	 */
-	private void remove_last() throws IOException
-	{
+	public void remove_last() throws IOException {
 		remove(LAST_INDEX);
+		out.writeObject("Last element was removed\n");
+	}
+
+	public void add(String sub_argument) {
+		try {
+			add_element(get_json_element(sub_argument));
+			out.writeObject("Element was successfully added\n");
+		} catch (IllegalStateException e) {
+			try {
+				out.writeObject("Incorrect input");
+			} catch (IOException ee) {}
+		} catch (NullPointerException e) {
+			try {
+				out.writeObject("Can't open file, may be you should change path");
+			} catch (IOException ee) {}
+		} catch (IOException e) {}
 	}
 
 	/**
 	 * wrapper remove method
 	 * call remove with first index of array
 	 */
-	private void remove_first() throws IOException
-	{
+	public void remove_first() throws IOException {
 		remove(0);
+		out.writeObject("First element was removed\n");
+	}
+
+	public void remove(String sub_argument) {
+		try {
+			try {
+				remove_element(get_json_element(sub_argument));
+				out.writeObject("Element was successfully removed\n");
+			} catch (IllegalStateException e) {
+				out.writeObject("Incorrect input\n");
+			} catch (NullPointerException e) {
+				out.writeObject("Can't open file, may be you should change path\n");
+			}
+		} catch (IOException ee) {}
 	}
 
 	/**
 	 * wrapper remove method
 	 * Try to find index element.
 	 * After that call remove with index this element
+	 *
 	 * @param passager - element for delete
 	 */
-	private void remove_element(Rocket_passager passager) throws IOException
-	{
-		Rocket rocket = read_from_xml(Rocket.class, collection_passagers_path);
+	public void remove_element(Rocket_passager passager) throws IOException {
+		Rocket rocket = read_from_xml(Rocket.class, Interactive_mode.collection_passagers_path);
 		for (int i = 0; i < rocket.getRocket_passageres().size(); i++)
 			if (passager.toString().equals(rocket.getRocket_passageres().get(i).toString())) {
 				remove(i);
@@ -239,72 +297,79 @@ public class Interactive_mode {
 
 	/**
 	 * delete elements
+	 *
 	 * @param index - element number
 	 */
-	private synchronized void remove(int index) throws IOException
-	{
-		Rocket rocket = read_from_xml(Rocket.class, collection_passagers_path);
-		if (rocket.getRocket_passageres().size() > 0 && rocket.getRocket_passageres().size()> index) {
+	private synchronized void remove(int index) throws IOException {
+		Rocket rocket = read_from_xml(Rocket.class, Interactive_mode.collection_passagers_path);
+		if (rocket.getRocket_passageres().size() > 0 && rocket.getRocket_passageres().size() > index) {
 			if (index == LAST_INDEX) index = rocket.getRocket_passageres().size() - 1;
 			rocket.getRocket_passageres().remove(index);
 		} else
 			out.writeObject("Can't remove. Container empty");
-		write_to_xml(rocket, collection_passagers_path);
+		write_to_xml(rocket, Interactive_mode.collection_passagers_path);
 	}
 
 	/**
 	 * Add new element into collection
+	 *
 	 * @param passager - element, that will be add
 	 */
-	private synchronized void add_element(Rocket_passager passager)
-	{
-		Rocket rocket = read_from_xml(Rocket.class, collection_passagers_path);
+	private synchronized void add_element(Rocket_passager passager) {
+		Rocket rocket = read_from_xml(Rocket.class, Interactive_mode.collection_passagers_path);
 		rocket.getRocket_passageres().add(passager);
-		write_to_xml(rocket, collection_passagers_path);
+		write_to_xml(rocket, Interactive_mode.collection_passagers_path);
+	}
+	public void start() {
+		try {
+			Room_list rooms = BlackMagic.read_from_xml(Room_list.class, Interactive_mode.collection_rooms_path);
+			Rocket rocket = BlackMagic.read_from_xml(Rocket.class, Interactive_mode.collection_passagers_path);
+			out.flush();
+			out.writeObject(rooms);
+			out.flush();
+			out.writeObject(rocket);
+			out.flush();
+		} catch (IOException e) {}
 	}
 
 	/**
 	 * Change path to file with collection
-	 * @param input - scanner for read new path
 	 */
-	private void import_path(String path)
-	{
+	private void import_path(String path) {
 		String new_path;
-			new_path = path;
-			collection_passagers_path = new_path;
+		new_path = path;
+		Interactive_mode.collection_passagers_path = new_path;
 	}
 
-	private void save_to(String path)
-	{
-		Rocket rocket = read_from_xml(Rocket.class, collection_passagers_path);
+	private void save_to(String path) {
+		Rocket rocket = read_from_xml(Rocket.class, Interactive_mode.collection_passagers_path);
 		write_to_xml(rocket, path);
 	}
 
 	/**
 	 * Parse json input and build new passager
+	 *
 	 * @return redy for action passager
 	 */
-	private Rocket_passager get_json_element(String element) throws IOException
-	{
+	private Rocket_passager get_json_element(String element) throws IOException {
 		Gson gson = new Gson();
 		String JSON;
 		Rocket_passager passager;
 		try {
 			JSON = element;
 			out.writeObject(JSON);
-		    passager = gson.fromJson(JSON, Rocket_passager.class);
-		    if (passager.getPlace() == null)
-		    	throw new Exception();
-		} catch (Exception e)
-		{
+			passager = gson.fromJson(JSON, Rocket_passager.class);
+			if (passager.getPlace() == null)
+				throw new Exception();
+		} catch (Exception e) {
 			out.writeObject("Не самое правильное значение");
 			out.writeObject("Сначала имя, потом знания, затем статус и местоположение");
-			throw  new IllegalStateException();
+			throw new IllegalStateException();
 		}
 
-		Room_list Container = read_from_xml(Room_list.class, collection_rooms_path);
+		Room_list Container = read_from_xml(Room_list.class, Interactive_mode.collection_rooms_path);
 		boolean room_exist = false;
-		for(Room room : Container.getRooms()) {
+		for (Room room : Container.getRooms()) {
 			if (room.comparebyname(passager.getPlace().getName())) {
 				passager.setPlace(room);
 				room_exist = true;
@@ -320,12 +385,12 @@ public class Interactive_mode {
 
 	/**
 	 * Write object into file(may be new file)
+	 *
 	 * @param object_to_write - object for writting into file
-	 * @param path - path to collection
-	 * @param <T> - class, which will be write to file
+	 * @param path            - path to collection
+	 * @param <T>             - class, which will be write to file
 	 */
-	public static synchronized <T> void write_to_xml( T object_to_write, String path)
-	{
+	public static synchronized <T> void write_to_xml(T object_to_write, String path) {
 
 		try {
 			File file = new File(path);
@@ -343,12 +408,13 @@ public class Interactive_mode {
 
 	/**
 	 * Read information from xml file
+	 *
 	 * @param type - type object
 	 * @param path - path to filr
-	 * @param <T> type for read object
+	 * @param <T>  type for read object
 	 * @return new object from file
 	 */
-	public static <T> T read_from_xml(Class <T> type, String path) {
+	public static <T> T read_from_xml(Class<T> type, String path) {
 		try {
 			File file = new File(path);
 			JAXBContext jaxbContext = JAXBContext.newInstance(type);
@@ -361,7 +427,7 @@ public class Interactive_mode {
 		} catch (JAXBException e) {
 			e.printStackTrace();
 			return null;
-		} catch (FileNotFoundException e){
+		} catch (FileNotFoundException e) {
 			System.out.println("File not found");
 			return null;
 		}
@@ -369,12 +435,13 @@ public class Interactive_mode {
 
 	/**
 	 * Write objedct into the xml file
+	 *
 	 * @param passageres - this jbject will be write to file
 	 */
-	public synchronized static void writer_passageres(LinkedList<Rocket_passager> passageres){
+	public synchronized static void writer_passageres(LinkedList<Rocket_passager> passageres) {
 		try {
 			XMLOutputFactory output = XMLOutputFactory.newInstance();
-			XMLStreamWriter writer = output.createXMLStreamWriter(new FileWriter(collection_passagers_path));
+			XMLStreamWriter writer = output.createXMLStreamWriter(new FileWriter(Interactive_mode.collection_passagers_path));
 
 			writer.writeStartDocument("1.0");
 			writer.writeStartElement("rocket");
@@ -412,17 +479,22 @@ public class Interactive_mode {
 		}
 	}
 
-	private <T> void show_list( T object_to_write, String path) throws IOException
-	{
-	    	Rocket rocket = read_from_xml(Rocket.class, collection_passagers_path);
-			out.writeObject("Passagers:\n");
-	    	for (Rocket_passager auto : rocket.getRocket_passageres()) {
-				out.writeObject(auto.toString());
-	    	}
+	public void show() {
+	    try {
+			try {
+				out.writeObject("Try to show collection\n");
+				show_list(new Rocket(), Interactive_mode.collection_passagers_path);
+			} catch (NullPointerException e) {
+				out.writeObject("Can't open file, may be you should change path");
+			}
+		} catch (IOException ee) {}
+	}
+
+	private <T> void show_list(T object_to_write, String path) throws IOException {
+		Rocket rocket = read_from_xml(Rocket.class, Interactive_mode.collection_passagers_path);
+		out.writeObject("Passagers:\n");
+		for (Rocket_passager auto : rocket.getRocket_passageres()) {
+			out.writeObject(auto.toString());
+		}
 	}
 }
-
-//add more friendly json add
-//add html server
-
-//add logger
