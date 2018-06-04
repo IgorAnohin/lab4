@@ -9,8 +9,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 abstract class WindowCollectionCommun extends JFrame {
+
+    String lang = "ru";
+    ResourceBundle r;
+    JButton langButton;
 
     protected String command = "none";
     final static int WIDTH_W = 500;
@@ -20,7 +26,7 @@ abstract class WindowCollectionCommun extends JFrame {
 
     GameWindow parent;
 
-    JLabel addlabel = new JLabel("Please, fill some fields");
+    JLabel addlabel;
 
     JButton checkButton = new JButton("abstract");
     JButton cancelButton = new JButton("Cancel");
@@ -58,7 +64,17 @@ abstract class WindowCollectionCommun extends JFrame {
             new JTextField("YELLOW")
     };
 
-    public WindowCollectionCommun(GameWindow parent) {
+    JLabel[] labels = {
+            new JLabel(),
+            new JLabel(),
+            new JLabel(),
+            new JLabel(),
+            new JLabel(),
+            new JLabel()
+    };
+
+
+    public WindowCollectionCommun(GameWindow parent, String languge) {
         /////////////////////////
         int i = 1;
         for (JComboBox componentt : boxes) {
@@ -81,6 +97,24 @@ abstract class WindowCollectionCommun extends JFrame {
         this.parent = parent;
         success_add = false;
 
+        lang = languge;
+        Locale dLocale = new Locale.Builder().setLanguage(lang).build();
+        r = ResourceBundle.getBundle("languages", dLocale, new UTF8Control());
+
+        addlabel = new JLabel(r.getString("fill_fields"));
+        labels[0].setText("    " + r.getString("name"));
+        labels[1].setText("    " + r.getString("status"));
+        labels[2].setText("    " + r.getString("room"));
+        labels[3].setText("    " + r.getString("knowledge"));
+        labels[4].setText("    " + r.getString("size"));
+        labels[5].setText("    " + r.getString("color"));
+        if (command.equals("remove"))
+            checkButton.setText(r.getString("remove_but"));
+        else
+            checkButton.setText(r.getString("add_but"));
+        cancelButton.setText(r.getString("canc_but"));
+
+
         this.setVisible(true);
         this.setBounds(10,10,WIDTH_W,HEIGHT_W);
 
@@ -90,23 +124,18 @@ abstract class WindowCollectionCommun extends JFrame {
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
 
         JPanel panel= new JPanel();
-        panel.setLayout(new GridLayout(8,1));
+        panel.setLayout(new GridLayout(9,1));
+        langButton = new JButton();
+        langButton.setText(r.getString("lang_but"));
+        addChangeButtonListener();
+        panel.add(langButton);
         panel.add(addlabel);
-
-        JLabel[] labels = {
-                new JLabel("    Name"),
-                new JLabel("    Status"),
-                new JLabel("    Room"),
-                new JLabel("    Knowledge"),
-                new JLabel("    Size"),
-                new JLabel("    Color"),
-        };
 
         fields[0].setAlignmentX(Component.RIGHT_ALIGNMENT);
         AddFields(panel, labels[0], fields[0]);
         for (i = 0; i < 5; i++) {
             //boxes[i].setAlignmentX(Component.RIGHT_ALIGNMENT);
-            AddFields(panel, labels[i], boxes[i]);
+            AddFields(panel, labels[i+1], boxes[i]);
         }
 
         addButtonFields(panel);
@@ -212,14 +241,47 @@ abstract class WindowCollectionCommun extends JFrame {
             }
         });
     }
+
+
+    void addChangeButtonListener() {
+
+        langButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+
+                if (lang.equals("ru"))
+                    lang = "en";
+                else if (lang.equals("en"))
+                    lang = "el";
+                else
+                    lang = "ru";
+
+                Locale dLocale = new Locale.Builder().setLanguage(lang).build();
+                r = ResourceBundle.getBundle("languages", dLocale, new UTF8Control());
+
+                labels[0].setText("    " + r.getString("name"));
+                labels[1].setText("    " + r.getString("status"));
+                labels[2].setText("    " + r.getString("room"));
+                labels[3].setText("    " + r.getString("knowledge"));
+                labels[4].setText("    " + r.getString("size"));
+                labels[5].setText("    " + r.getString("color"));
+                langButton.setText(r.getString("lang_but"));
+                if (command.equals("remove"))
+                    checkButton.setText(r.getString("remove_but"));
+                else
+                    checkButton.setText(r.getString("add_but"));
+                cancelButton.setText(r.getString("canc_but"));
+            }
+        });
+    }
 }
 
 
 class DeleteWindow extends WindowCollectionCommun {
 
-    public DeleteWindow(GameWindow parent) {
-        super(parent);
-        checkButton.setText("Delete");
+    public DeleteWindow(GameWindow parent, String language) {
+        super(parent, language);
         command = "remove";
     }
 
@@ -228,9 +290,8 @@ class DeleteWindow extends WindowCollectionCommun {
 
 class AddWindow extends WindowCollectionCommun {
 
-    public AddWindow(GameWindow parent) {
-        super(parent);
-        checkButton.setText("Add");
+    public AddWindow(GameWindow parent, String language) {
+        super(parent, language);
         command = "add";
     }
 
