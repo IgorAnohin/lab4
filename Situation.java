@@ -79,10 +79,10 @@ class Situation
 		create_heroes();
 		create_devices();
 		System.out.printf("Иницилизация закончена.\n\n");
-		Interactive_mode.writer_passageres(Rocket_passageres);
+		BlackMagic.writer_passageres(Rocket_passageres);
 		Room_list rooms = new Room_list();
 		rooms.setRooms(Rooms);
-		Interactive_mode.write_to_xml(rooms, Interactive_mode.collection_rooms_path);
+		BlackMagic.write_to_xml(rooms, Interactive_mode.collection_rooms_path);
 		return new Rocket(Rocket_passageres, Rooms, Devices);
 	}
 
