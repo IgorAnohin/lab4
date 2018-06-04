@@ -1,4 +1,4 @@
-import client.Browser_answer;
+//import client.Browser_answer;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -104,8 +104,8 @@ public class Server {
 
 
             int n = Thread.activeCount();
-            Room_list rooms = Interactive_mode.read_from_xml(Room_list.class, Interactive_mode.collection_rooms_path);
-            Rocket rocket = Interactive_mode.read_from_xml(Rocket.class, Interactive_mode.collection_passagers_path);
+            Room_list rooms = BlackMagic.read_from_xml(Room_list.class, Interactive_mode.collection_rooms_path);
+            Rocket rocket = BlackMagic.read_from_xml(Rocket.class, Interactive_mode.collection_passagers_path);
             String temp_string = "";
             for (Rocket_passager passanger : rocket.getRocket_passageres()) {
                 System.out.println(passanger);
